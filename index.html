@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sochil Learning · Impara la gamma in fretta</title>
+<style>
+:root{--orange:#E0531E;--orange-d:#b8410f;--blue:#1F4E96;--blue-d:#163a72;--ink:#16202e;--muted:#5b6470;--line:#e6e9ee;--bg:#eef2f7;--card:#fff;--green:#1f9d57;--soft-o:#fde8df;--soft-b:#e1ebfa}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Roboto,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-text-size-adjust:100%}
+.app{max-width:860px;margin:0 auto;padding:0 14px 64px}
+header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin:0 -14px 0;padding:10px 14px}
+.hbar{display:flex;align-items:center;gap:10px;max-width:860px;margin:0 auto}
+.logo{font-weight:800;font-size:18px;color:var(--blue);letter-spacing:.3px;line-height:1}
+.logo span{color:var(--orange)}
+.tag{font-size:11px;font-weight:700;color:#fff;background:var(--orange);border-radius:20px;padding:3px 10px;text-transform:uppercase;letter-spacing:.4px}
+.cobrand{display:flex;align-items:center;gap:7px;border-left:1px solid var(--line);padding-left:10px}
+.cb-sep{font-size:10px;color:var(--muted)}.cb-logo{font-weight:800;color:#E2001A;font-size:14px}
+.cb-logo svg{height:23px;width:auto;display:block}
+.home-hero{background:linear-gradient(125deg,var(--blue),var(--blue-d));color:#fff;border-radius:18px;padding:22px 20px;margin:16px 0}
+.home-hero h1{font-size:22px;margin-bottom:6px}
+.home-hero p{color:#d7e3f6;font-size:14px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.btn{border:0;border-radius:12px;padding:11px 16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn.pri{background:var(--orange);color:#fff}.btn.pri:active{background:var(--orange-d)}
+.btn.ghost{background:rgba(255,255,255,.16);color:#fff}
+.btn.lt{background:#fff;color:var(--blue);border:1px solid var(--line)}
+.sec-t{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;margin:20px 4px 10px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:6px;min-height:118px}
+.mcard:active{transform:scale(.98)}
+.mcard:hover{border-color:var(--orange);box-shadow:0 8px 22px rgba(20,32,46,.08)}
+.mcard .ic{font-size:22px;line-height:1}
+.mcard .mt{font-weight:700;font-size:14.5px;color:var(--blue-d)}
+.mcard .mm{font-size:12px;color:var(--muted);margin-top:auto}
+.mcard.fond{background:linear-gradient(135deg,#fff,var(--soft-o))}
+.mcard.search{background:linear-gradient(135deg,#fff,var(--soft-b))}
+.back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--blue);font-weight:700;font-size:14px;cursor:pointer;margin:16px 0 4px;font-family:inherit}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+h2.pg{font-size:21px;color:var(--blue);margin:6px 4px 2px}
+.lead{color:var(--muted);font-size:14px;margin:0 4px 6px}
+.card h3{font-size:15.5px;color:var(--blue-d);margin:14px 0 5px}
+.card h3:first-child{margin-top:0}
+.card p{font-size:14px;margin-bottom:8px}
+.scale{display:flex;border-radius:10px;overflow:hidden;margin:10px 0;font-size:10.5px;color:#fff;text-align:center;font-weight:600}
+.scale div{padding:8px 3px}
+.sinner{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#f7f9fc;border:1px solid var(--line);border-radius:12px;padding:14px;margin:8px 0}
+.sinner svg{width:124px;height:124px;flex-shrink:0}
+.sinner ul{list-style:none;font-size:13px;display:flex;flex-direction:column;gap:6px;min-width:200px;flex:1}
+.sinner li{display:flex;align-items:center;gap:8px}.sinner .sw{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.cc{display:inline-block;padding:1px 8px;border-radius:10px;color:#fff;font-size:12px;font-weight:700}
+.cc.red{background:#c0392b}.cc.yel{background:#d98a00}.cc.grn{background:#2e8b57}.cc.blu{background:#2f5fb0}
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px}
+.fchip{font-size:12.5px;padding:7px 13px;border-radius:18px;background:#fff;border:1px solid var(--line);color:var(--muted);cursor:pointer;font-weight:600}
+.fchip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.search-in{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:15px;font-family:inherit}
+.search-in:focus{outline:none;border-color:var(--blue)}
+.pcard{border:1px solid var(--line);border-radius:14px;margin:11px 0;overflow:hidden;background:#fff}
+.pc-h{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line)}
+.pc-h .nm{font-weight:800;color:var(--ink);font-size:15.5px}
+.pc-h .sb{font-size:12px;color:var(--muted)}
+.ph{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:13px;margin-left:auto;color:#fff;white-space:nowrap}
+.ph.acid{background:#c0392b}.ph.neu{background:#2e8b57}.ph.alk{background:#2f5fb0}
+.pc-b{padding:12px 14px;font-size:13.5px;display:flex;flex-direction:column;gap:8px}
+.kv b{color:var(--blue-d)}
+.sell{background:var(--soft-o);border-left:3px solid var(--orange);padding:8px 11px;border-radius:7px}
+.warn{background:#fff4f0;border-left:3px solid #c0392b;padding:8px 11px;border-radius:7px}
+.tech{background:#eef3fb;border-left:3px solid var(--blue);padding:8px 11px;border-radius:7px}
+details.more{border-top:1px dashed var(--line);padding-top:8px}
+details.more summary{cursor:pointer;color:var(--blue);font-weight:700;font-size:13px;list-style:none}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"▾ ";}
+details.more[open] summary::before{content:"▴ ";}
+.dt{font-size:12.5px;background:#fafbfc;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:8px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.dt b{color:var(--blue-d)}
+.q{border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:11px;background:#fff}
+.q .qt{font-weight:700;margin-bottom:4px;font-size:14px}
+.q .scen{font-size:12.5px;color:var(--muted);font-style:italic;margin-bottom:8px}
+.opt{display:block;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:7px;cursor:pointer;font-size:13.5px}
+.opt:active{background:var(--bg)}.opt.sel{border-color:var(--blue);background:var(--soft-b)}
+.opt.ok{border-color:var(--green);background:#e9f8ef}.opt.no{border-color:#c0392b;background:#fdecea}
+.exp{font-size:12.5px;margin-top:6px;display:none;background:#f3f7f3;border-left:3px solid var(--green);padding:8px 10px;border-radius:6px}
+.exp.show{display:block}
+.res{padding:13px;border-radius:11px;margin-top:8px;font-weight:700;display:none;font-size:14px}
+.res.show{display:block}.res.pass{background:#e9f8ef;color:var(--green)}.res.fail{background:#fdecea;color:#c0392b}
+.modnav{display:flex;gap:10px;margin:16px 0 4px}
+.modnav button{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--blue);cursor:pointer;font-family:inherit;text-align:left}
+.modnav button.nx{text-align:right}.modnav button:disabled{opacity:.4}
+.modnav .s{display:block;font-size:11px;color:var(--muted);font-weight:500}
+footer{text-align:center;color:var(--muted);font-size:11.5px;padding:22px 8px 0;line-height:1.5}
+#toasts{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:#16202e;color:#fff;border-radius:10px;padding:10px 16px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.ok{background:#1f9d57}.toast.warn{background:#d98a00}
+@media(max-width:520px){.home-hero h1{font-size:20px}.sinner svg{width:104px;height:104px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="hbar">
+  <div class="logo">SOCHIL<span>.</span></div><div class="tag">Learning</div>
+  <div class="cobrand" id="cobrand"><span class="cb-sep">con</span><span class="cb-logo"><svg viewBox="0 0 250 84" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lyreco"><path d="M4,42 C30,12 72,5 110,9 C74,16 36,23 12,46 C9,45 6,43 4,42 Z" fill="#93C01F"/><path d="M246,42 C214,70 172,77 136,73 C172,66 210,59 238,38 C241,39 244,40 246,42 Z" fill="#93C01F"/><text x="125" y="61" text-anchor="middle" font-family="'Arial Black','Segoe UI',Arial,sans-serif" font-weight="900" font-size="50" letter-spacing="-1.5" fill="#312783">Lyreco</text></svg></span></div>
+</div></header>
+<main id="main"></main>
+<footer>Sochil Chimica · Specialist Learning · Strumento formativo/commerciale: i dati non sostituiscono le SDS e le etichette CLP ufficiali. Progressi salvati su questo dispositivo.<br>Distinto dalla Sochil Hygiene Specialist Academy (programma di certificazione).</footer>
+</div>
+<div id="toasts"></div>
+<script>
+/* ============ DATABASE PRODOTTI (fonte: gamma Sochil, 34 referenze) ============ */
+const P = {
+ /* FOODSERVICE */
+ grill:{n:"Grill",s:"Pulitore alcalino griglie, forni, cappe",cat:"food",ph:13,phc:"alk",fmt:"750 ml · 6 kg",
+  asp:"Liquido lilla, profumo caratteristico",dens:"~1,05 g/ml",bio:">90%",val:"24 mesi",
+  comp:"5–15% tensioattivi non ionici, <5% anionici, idrossido di sodio, solventi, profumo, coloranti.",
+  clienti:"Cucine professionali, barbecue, forni e teglie, cappe e filtri, acciaio inox resistente.",
+  use:"Scioglie grasso bruciato e residui carbonizzati su griglie, piastre, forni e cappe.",
+  how:"Pronto all'uso. Spruzzare, attendere 1–5 min secondo lo sporco, risciacquare e asciugare.",
+  tech:"L'alta alcalinità (soda) saponifica i grassi carbonizzati: per questo agisce dove gli sgrassanti leggeri si fermano.",
+  sell:"Risolve lo sporco più difficile della cucina, dove i pronti leggeri falliscono: prodotto 'di punta' difficile da sostituire.",
+  warn:"pH 13: NON su alluminio, legno grezzo, marmo/granito, superfici verniciate o smaltate. DPI."},
+ netplus:{n:"Net+",s:"Sgrassatore multiuso per cucine professionali",cat:"food",ph:11,phc:"alk",fmt:"750 ml",
+  asp:"Liquido verde, profumo caratteristico",dens:"~1,00 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi anionici e non ionici, solventi, sequestranti, coformulanti, profumo, colorante.",
+  clienti:"Cucine foodservice, piani di lavoro, arredi e attrezzature in acciaio inox.",
+  use:"Grasso e sporco quotidiano da piani, acciaio inox, attrezzature foodservice.",
+  how:"Pronto all'uso. Spruzzare, passare con panno e risciacquare: il risciacquo è sempre necessario.",
+  tech:"Formula priva di alcali forti: pulisce il grasso alimentare quotidiano senza aggredire l'inox.",
+  sell:"Il 'tuttofare' sicuro della cucina: alta frequenza d'uso = riordini costanti.",warn:""},
+ deterjet:{n:"Deterjet",s:"Sgrassante rapido anti-aloni superfici dure",cat:"food",ph:10,phc:"alk",fmt:"750 ml",
+  asp:"Liquido azzurro, profumo caratteristico",dens:"~1,00 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici, solventi, coformulanti, profumo.",
+  clienti:"Bar, ristoranti, banchi e vetrine, fornelli e acciaio.",
+  use:"Banchi, piani, acciaio e vetrine in ambienti foodservice; finitura senza aloni.",
+  how:"Pronto all'uso. Spruzzare, passare con panno. Non necessita risciacquo.",
+  tech:"I solventi e i tensioattivi non ionici evaporano lasciando l'inox e il vetro brillanti, senza velo.",
+  sell:"Effetto anti-aloni sulle aree a vista (banchi bar, vetrine): immagine pulita immediata.",warn:""},
+ fatpul:{n:"Fatpul",s:"Detergente per forni autopulenti",cat:"food",ph:13,phc:"alk",fmt:"6 kg",
+  asp:"Liquido giallo, odore caratteristico",dens:"1,10 g/ml",bio:"",val:"24 mesi",
+  comp:"Tensioattivi non ionici, alcali, sequestranti, coadiuvanti funzionali.",
+  clienti:"Ristoranti, hotel, mense, pasticcerie, catering, GDO con forni combi/steamer.",
+  use:"Forni professionali autopulenti (combi/steamer) con sistema di lavaggio integrato.",
+  how:"Dosare nel serbatoio detergente del forno secondo le indicazioni del costruttore; avviare il ciclo; risciacquo automatico.",
+  tech:"Alta alcalinità a bassa schiuma per cicli automatici ad alta temperatura: agisce su grassi molli, duri e bruciati.",
+  sell:"Prodotto dedicato: ogni forno autopulente installato è una vendita ricorrente 'a sistema'.",
+  warn:"Seguire le indicazioni del costruttore del forno. Alcalino forte: DPI."},
+ mastermatic:{n:"Master Matic",s:"Detergente lavastoviglie professionale",cat:"food",ph:13.2,phc:"alk",fmt:"5 L",
+  asp:"Liquido giallo, profumo caratteristico",dens:"1,18 g/ml",bio:"",val:"24 mesi",
+  comp:"Tensioattivi non ionici, fosfonati, sequestranti, alcali, coformulanti.",
+  clienti:"Ristoranti, mense, hotel, catering, comunità, bar (lavaggio meccanico).",
+  use:"Lavaggio meccanico stoviglie: rimuove grassi, amidi e residui di cibo anche incrostati.",
+  how:"Dosaggio automatico secondo durezza acqua: dolce 1 g/L · media 2 g/L · dura 3 g/L.",
+  tech:"Alcalinità + fosfonati/sequestranti: scioglie l'organico e tiene in sospensione il calcare dell'acqua dura.",
+  sell:"Cuore del ciclo lavastoviglie: si vende SEMPRE con brillantante (Brilux) e disincrostante (Decrost).",warn:""},
+ brilux:{n:"Brilux",s:"Brillantante acido lavastoviglie",cat:"food",ph:3,phc:"acid",fmt:"5 L",
+  asp:"Liquido blu, inodore",dens:"1,02 g/ml",bio:">90%",val:"24 mesi",
+  comp:"5–15% tensioattivi non ionici, correttori di acidità, sequestranti, sostanze ausiliarie.",
+  clienti:"Lavastoviglie professionali (ristorazione, hotel, bar).",
+  use:"Ultimo risciacquo: asciugatura rapida, niente aloni, previene il calcare su vetro e posate.",
+  how:"Dosaggio automatico secondo durezza: 0,1–0,3 g/L. Temperatura acqua risciacquo 75–85 °C.",
+  tech:"L'acidità neutralizza i residui alcalini e abbassa la tensione superficiale: l'acqua sgronda e asciuga senza macchie.",
+  sell:"Completa il risultato visivo (bicchieri brillanti = cliente contento). Consumabile in abbinata fissa a Master Matic.",warn:""},
+ decrost:{n:"Decrost",s:"Disincrostante acido lavastoviglie e attrezzature",cat:"food",ph:0.5,phc:"acid",fmt:"6 kg",
+  asp:"Liquido trasparente rosa, odore pungente",dens:"1,10 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Acidi inorganici, inibitori di corrosione, tensioattivi non ionici.",
+  clienti:"Lavastoviglie a capote e a traino, attrezzature e utensili in acciaio inox.",
+  use:"Rimuove calcare e incrostazioni minerali da macchine, utensili e inox; ripristina l'efficienza.",
+  how:"Procedura di disincrostazione a vasca (acqua tiepida + prodotto, mai il contrario); 2 cicli di risciacquo finali.",
+  tech:"Acidi inorganici (pH <1) con inibitori di corrosione: sciolgono il calcare proteggendo l'inox della macchina.",
+  sell:"Manutenzione periodica che allunga la vita della lavastoviglie: vendita ricorrente programmabile a calendario.",
+  warn:"MAI miscelare con alcalini o candeggina (gas tossici). No spugne metalliche su inox. Non su marmo/calcaree."},
+ ultranet:{n:"Ultranet",s:"Sgrassante concentrato multifunzione non caustico",cat:"food",ph:10.5,phc:"alk",fmt:"5 L",
+  asp:"Liquido verde, profumo caratteristico",dens:"~1,02 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici, sequestranti, solventi idrosolubili, coformulanti, conservanti, profumo.",
+  clienti:"Cucine professionali, settore food, piani/pareti/attrezzature e utensili.",
+  use:"Tutte le superfici di cottura; azione distaccante, emulsionante e antirideposizione anche nei punti nascosti.",
+  how:"Pre-ammollo utensili 1–5% (10–30 min); tavoli e piani 5%; cappe, forni e friggitrici tal quale.",
+  tech:"Non caustico ma ad alta efficacia: lavora bene anche a basse concentrazioni grazie alla formulazione ricca.",
+  sell:"Concentrato non caustico: dosaggi ridotti = basso costo d'uso. Forte argomento di economicità vs i pronti.",warn:""},
+ /* BAGNO */
+ batsan:{n:"Batsan",s:"Anticalcare brillantante e deodorante bagno",cat:"bath",ph:2.5,phc:"acid",fmt:"750 ml",
+  asp:"Liquido rosa, profumo fresca brezza",dens:"1,01 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici, acidi organici, solventi idrosolubili, profumi, coloranti.",
+  clienti:"Bagni e servizi igienici, hotel, palestre, docce, rubinetterie.",
+  use:"Calcare, sapone e sporco da sanitari, docce e rubinetterie; lascia brillante e profumato.",
+  how:"Spruzzare a 15–20 cm, lasciare agire 2–5 min secondo lo sporco, risciacquare.",
+  tech:"Acidi organici (pH 2,5): anticalcare quotidiano relativamente delicato, con effetto brillantante e deodorante.",
+  sell:"Manutenzione bagno di tutti i giorni: alta rotazione, ideale come entry product della linea bagno.",
+  warn:"Acido: verificare la compatibilità su marmo e pietre calcaree prima dell'uso."},
+ ipogel:{n:"Ipogel",s:"Gel sgrassante igienizzante e sbiancante",cat:"bath",ph:10,phc:"alk",fmt:"1 L",
+  asp:"Gel, colore e profumo caratteristici",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi, sequestranti, coadiuvanti funzionali, profumo, coloranti.",
+  clienti:"Cucine professionali, bagni e sanitari, piastrelle, aree comuni.",
+  use:"Grasso e sporco ostinato su superfici dure, sanitari, piastrelle; potere igienizzante e sbiancante.",
+  how:"Diluire 1–10%; puro su sporco difficile (agire ~1 min), poi risciacquare.",
+  tech:"Formato gel: aderisce e prolunga il tempo di contatto sulle superfici verticali. NB: 'igienizzante' non equivale a 'disinfettante' (non è un PMC).",
+  sell:"Il gel rende meno e meglio: meno prodotto sprecato, più contatto sullo sporco.",warn:""},
+ limelock:{n:"Limelock",s:"Gel disincrostante acido forte",cat:"bath",ph:1,phc:"acid",fmt:"750 ml",
+  asp:"Gel viscoso, colore e profumo caratteristici",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi, acidi, sequestranti, coadiuvanti funzionali.",
+  clienti:"Bagni, docce, cromature e rubinetterie, aree tecniche con incrostazioni.",
+  use:"Calcare ostinato, ruggine, residui di cemento e incrostazioni su superfici resistenti agli acidi.",
+  how:"Diluire 1% (min) – 5% (raccomandato), fino a puro su sporco pesante. Gel ad alta adesione, ideale verticale.",
+  tech:"Gel acido forte (pH 1): l'alta adesione mantiene l'acido a contatto col calcare anche sulle verticali.",
+  sell:"Il 'pesante' del bagno dove Batsan non basta: completa la scala anticalcare insieme a Batsan.",
+  warn:"pH 1: mai su marmo, travertino, granito, metalli reattivi (alluminio/zinco/rame), smalti delicati."},
+ /* PAVIMENTI */
+ ekosan:{n:"Ekosan Sc Spice",s:"Lavapavimenti neutro super-concentrato",cat:"floor",ph:7.5,phc:"neu",fmt:"1 L",
+  asp:"Liquido trasparente viola, profumo speziato fresco",dens:"1,01 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici e anionici, sequestranti, coformulanti, conservanti, profumo.",
+  clienti:"Uffici, hotel/B&B, scuole, sanitario, negozi, palestre, condomini.",
+  use:"Pulizia quotidiana di tutti i pavimenti e superfici lavabili; azione deodorante long-lasting.",
+  how:"Diluire 0,3% con dosing cup (~15 ml in 5 L). Non necessita risciacquo.",
+  tech:"Neutro super-concentrato: pulisce a fondo senza intaccare le finiture; il dosing cup garantisce dosaggio preciso ed economico.",
+  sell:"Profumazione coordinata con Aersan Permanent Spice: vendi l'ambiente coordinato (pavimento + aria).",warn:""},
+ pavilux:{n:"Pavilux 2000",s:"Lavapavimenti neutro brillantante profumato",cat:"floor",ph:7.5,phc:"neu",fmt:"1 L",
+  asp:"Come da prodotto, colore caratteristico",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi, sequestranti, coadiuvanti funzionali, profumo, coloranti.",
+  clienti:"Uffici e negozi, hotel e comunità, aree comuni.",
+  use:"Gres, ceramica, marmo sigillato, PVC e linoleum; finitura brillante e profumata.",
+  how:"Diluire 1–3% (manutenzione); 1–10–20% per pulizie rapide a spray. Applicabile con mop, frange o macchina lavasciuga; senza risciacquo.",
+  tech:"Neutro brillantante: sicuro sulle superfici delicate, esalta la lucentezza senza film cerosi.",
+  sell:"Tuttofare ad alta rotazione per pavimenti delicati: entry product semplice da posizionare.",warn:""},
+ sanson:{n:"Sanson",s:"Sgrassante pavimenti a schiuma frenata, effetto brillante",cat:"floor",ph:8,phc:"neu",fmt:"10 L",
+  asp:"Liquido giallo, profumo floreale fresco",dens:"1,02 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici e anionici, solventi idrosolubili, alcalinizzanti, profumo, conservanti, colorante.",
+  clienti:"Hotel, ristoranti, retail, scuole, centri commerciali, palestre, aree trafficate.",
+  use:"Sgrassa e dona lucentezza su marmo, gres, ceramica, cemento, linoleum; ambienti ad alto traffico.",
+  how:"0,5% ordinaria; 2% sporco pesante o in lavasciuga. Mop, frange microfibra, lavasciuga o spray.",
+  tech:"Bassa alcalinità + bassa schiuma: sgrassa senza opacizzare e senza mandare in blocco la lavasciuga.",
+  sell:"Bassa schiuma + effetto brillante: ideale lavasciuga in aree a vista (hotel, retail). Argomento tecnico forte.",warn:""},
+ splende:{n:"Splende",s:"Lavaincera manutentore autolucidante",cat:"floor",ph:8,phc:"neu",fmt:"5 L",
+  asp:"Liquido opalescente bianco avorio, profumo delicato",dens:"~1,01 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici, cere polimeriche, coformulanti, sequestranti, conservanti, profumo.",
+  clienti:"PVC e vinile, gomma e linoleum, marmo e graniglia, ceramica, uffici e aree pubbliche.",
+  use:"Pulisce, protegge e lucida in un solo passaggio; rinnova il film polimerico 3D autoreticolante.",
+  how:"Diluire 1–5%, applicare con mop o lavasciuga (bassa schiuma), lasciare asciugare: il film lucido si forma da solo.",
+  tech:"Le cere polimeriche autoreticolanti formano un film protettivo 'effetto specchio' senza lucidatrice, resistente al traffico.",
+  sell:"Vende la PROTEZIONE oltre la pulizia: pavimento sempre lucido, meno pulizie straordinarie = valore percepito alto.",warn:""},
+ detersolvs:{n:"Detersol VS",s:"Detergente lavavetri con stecca",cat:"floor",ph:7,phc:"neu",fmt:"1 L",
+  asp:"Liquido incolore, profumo caratteristico",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi, coadiuvanti funzionali, sequestranti, profumo, coloranti.",
+  clienti:"Uffici direzionali, negozi/showroom e vetrine, hotel, serramenti.",
+  use:"Vetri, vetrate, specchi e superfici trasparenti; brillantezza senza aloni, asciugatura rapida.",
+  how:"Diluire 1–5% (100–500 g in 10 L), applicare con vello/spugna, rifinire con stecca.",
+  tech:"Pensato per il metodo professionale a stecca: scivolosità controllata e rapida evaporazione, niente striature.",
+  sell:"Per chi pulisce vetrate 'a metodo' (vetrine negozi, uffici, hotel): prodotto da addetto esperto.",warn:""},
+ duflash:{n:"Du-Flash Glass",s:"Schiuma detergente vetri e specchi",cat:"floor",ph:null,phc:"neu",fmt:"500 ml aerosol",
+  asp:"Schiuma aerosol bianca, profumo fresco",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi non ionici, alcoli, solventi volatili, sequestranti, profumo, propellente.",
+  clienti:"Uffici, retail e vetrine, hotel, palestre/spa, scuole, anche auto.",
+  use:"Vetri, specchi e superfici lavabili anche verticali; non lascia striature, evapora rapidamente.",
+  how:"Agitare, spruzzare la schiuma uniformemente, passare con panno pulito fino ad asciugatura.",
+  tech:"Schiuma attiva ad alta adesione: resta sulle verticali e non cola, gli alcoli/solventi evaporano senza residui.",
+  sell:"Pronto e pratico per ritocchi rapidi e superfici verticali: complementare a Detersol VS.",warn:""},
+ deink:{n:"DeInk",s:"Pulitore super-attivo inchiostri e sporchi pesanti",cat:"floor",ph:10.5,phc:"alk",fmt:"750 ml",
+  asp:"Liquido blu, profumo delicato",dens:"1,01 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici e anionici, sequestranti, coadiuvanti, solventi idrosolubili, profumo, colorante.",
+  clienti:"Scuole e istituti, uffici, laboratori, reparti produttivi, officine, mense.",
+  use:"Inchiostri di penna, pennarelli indelebili, evidenziatori, timbri e sporco grasso da superfici dure lavabili.",
+  how:"Pronto all'uso. Spruzzare, agire 1–3 min, strofinare, risciacquare se necessario.",
+  tech:"Solventi idrosolubili + tensioattivi alcalini: sciolgono inchiostri e adesivi senza rovinare le superfici resistenti agli alcali.",
+  sell:"Risolve un problema specifico e ricorrente (scuole, uffici, mense): prodotto 'unico', difficile da sostituire.",
+  warn:"Alcalino: solo su superfici dure lavabili resistenti agli alcali."},
+ tekok:{n:"Tek Ok",s:"Pulitore antistatico per superfici in legno",cat:"floor",ph:7,phc:"neu",fmt:"750 ml",
+  asp:"Liquido rosa, profumo floreale fresco",dens:"1,00 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici, solventi a bassa volatilità, profumo, conservanti, colorante.",
+  clienti:"Uffici, hotel, mobili e arredi, porte/infissi/battiscopa in legno.",
+  use:"Mobili e arredi in legno (verniciato, laccato, laminato): pulisce, ravviva, riduce il rideposito di polvere.",
+  how:"Spruzzare su superficie o su panno morbido, passare uniformemente, asciugare. Non risciacqua.",
+  tech:"Azione antistatica: riduce l'attrazione della polvere, mantenendo gli arredi puliti più a lungo.",
+  sell:"Cura del legno con effetto antistatico: completa la pulizia di uffici e hotel sugli arredi a vista.",warn:""},
+ /* INDUSTRIALE */
+ greenenergy:{n:"Green Energy",s:"Detergente sgrassante industriale ad alta efficacia",cat:"ind",ph:12.5,phc:"alk",fmt:"10 L",
+  asp:"Come da prodotto, colore caratteristico",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi, sequestranti, coadiuvanti funzionali, profumo, coloranti (concentrato).",
+  clienti:"Officine, reparti produttivi, magazzini, pavimenti industriali, macchinari.",
+  use:"Oli, grassi, residui industriali e sporco tenace da pavimenti, macchinari e officine.",
+  how:"Diluire 1% per la manutenzione pavimenti, fino a 10% su sporco pesante. Applicabile manualmente, in lavasciuga o con idropulitrice.",
+  tech:"Alcalino concentrato ad alta resa: la concentrazione permette di tarare la forza in base allo sporco.",
+  sell:"Cavallo di battaglia industriale: alta resa e basso costo d'uso, ottimo per i grandi consumatori.",
+  warn:"pH 12–13: non su alluminio, legno grezzo, marmo, verniciato."},
+ ergonet:{n:"Ergonet",s:"Sgrassante industriale multiuso a schiuma frenata",cat:"ind",ph:13.5,phc:"alk",fmt:"10 L",
+  asp:"Come da prodotto, colore caratteristico",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi, sequestranti, coadiuvanti funzionali, profumo, coloranti.",
+  clienti:"Officine, magazzini, pavimenti industriali, attrezzature, scale e gradini.",
+  use:"Sporco ostinato (animale, vegetale, minerale, misto) su pavimenti, attrezzature e piani industriali.",
+  how:"0,5–1% ordinaria; 2–5% straordinaria/sporco pesante; 30% per la rimozione di strati di cera.",
+  tech:"Alcalino molto forte (pH 13–14) a schiuma frenata: doppia funzione sgrassante e decerante, adatto a lavasciuga.",
+  sell:"Due usi in un prodotto (sgrassaggio + decerazione) + compatibilità lavasciuga: razionalizza il magazzino del cliente.",
+  warn:"pH 13–14: non su alluminio, legno, marmo, verniciato."},
+ viaol:{n:"Viaol",s:"Detergente solubilizzante sgrassante",cat:"ind",ph:13,phc:"alk",fmt:"10 L",
+  asp:"Liquido rosso, odore caratteristico",dens:"1,05 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi anionici e non ionici, sequestranti, alcalinizzanti, solventi, coformulanti.",
+  clienti:"Officine e autorimesse, metalmeccanica, reparti manutenzione/produzione, impianti.",
+  use:"Oli minerali, grassi, residui carboniosi e sporco tenace da metalli e pavimenti; anche pulizia pre-verniciatura.",
+  how:"Diluire 1–25% secondo lo sporco: pavimenti unti 1–5%, parti meccaniche/macchinari 10–15%, incrostazioni 15–25%.",
+  tech:"Alta alcalinità + solventi: 'solubilizza' oli e residui carboniosi, lasciando il metallo pronto per le lavorazioni; sui pavimenti unti è impiegabile anche in lavasciuga.",
+  sell:"Specifico officina/metalmeccanica: l'uso pre-verniciatura lo rende indispensabile in produzione.",
+  warn:"pH >13: cautela su metalli leggeri e leghe non trattate; DPI obbligatori."},
+ redenergy:{n:"Red Energy",s:"Detergente alcalino a schiuma frenata per superfici trafficate",cat:"ind",ph:13,phc:"alk",fmt:"1 L",
+  asp:"Liquido trasparente rosso, odore tecnico",dens:"1,07 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici e anionici, sequestranti, solventi idrosolubili, alcalinizzanti, coformulanti.",
+  clienti:"Industrie e capannoni, stazioni di servizio, centri commerciali, condomini e scale.",
+  use:"Pavimenti ad alto traffico (cemento, gres, epossidici) con oli, grassi e residui organici.",
+  how:"0,5–3% mantenimento giornaliero; 3–5% sporco ostinato. Ideale con lavasciuga e idropulitrice.",
+  tech:"Alcalino forte a schiuma frenata: pensato per macchine, garantisce risciacquo rapido senza residui su grandi superfici.",
+  sell:"Bassa schiuma per lavasciuga su grandi metrature: prestazione + velocità, argomento da grande struttura.",
+  warn:"pH 13: non su alluminio, legno, marmo, verniciato/laccato delicato."},
+ /* DISINFEZIONE */
+ alcovir:{n:"Alcovir",s:"Disinfettante per superfici a base di alcol etilico — PMC",cat:"dis",ph:7,phc:"neu",fmt:"750 ml · 5 L",reg:"PMC Reg. Min. Salute n. 20722",
+  asp:"Liquido trasparente, profumo caratteristico alcolico",dens:"850±20 g/L",bio:"",val:"n.d.",
+  comp:"Etanolo 70,4 g/100 g (alcol etilico), eccipienti e acqua deionizzata.",
+  clienti:"Ambulatori, case di riposo, comunità, uffici, attività commerciali, Ho.Re.Ca., industria agroalimentare; ideale sui punti di contatto (scrivanie, maniglie, tastiere, schermi).",
+  use:"Disinfezione rapida di superfici dure e punti di contatto frequenti; elimina il 99,99% di batteri, funghi e virus con involucro.",
+  how:"Detergere prima la superficie; spruzzare Alcovir tal quale, stendere con panno o carta monouso e lasciare agire ~3 minuti. Superfici a contatto con alimenti: risciacquare con acqua.",
+  tech:"Base alcol etilico (etanolo 70,4%): asciuga rapidamente senza residui né aloni. Idoneo nei piani di autocontrollo HACCP. Prodotto infiammabile.",
+  sell:"Pronto, rapido e senza aloni sui punti di contatto: registrazione PMC ed efficacia 99,99% sono la leva di conformità verso il cliente.",
+  warn:"PMC: rispettare il tempo di contatto (~3 min). A base alcol: infiammabile, tenere lontano da fiamme e fonti di calore."},
+ igiesanrtu:{n:"Igiesan RTU",s:"Disinfettante inodore pronto all'uso — PMC",cat:"dis",ph:10,phc:"alk",fmt:"750 ml (8 pz)",reg:"PMC Reg. Min. Salute n. 21255",
+  asp:"Liquido incolore, inodore",dens:"~1 kg/L",bio:"",val:"n.d.",
+  comp:"Didecildimetilammonio cloruro 0,30 g/100 g (CAS 7173-51-5), coformulanti e acqua.",
+  clienti:"Aree istituzionali (scuole, uffici, palestre, strutture pubbliche), industria alimentare (ristoranti, bar, hotel, gastronomia, laboratori), aree cosmetiche/farmaceutiche/medica.",
+  use:"Detersione e disinfezione di superfici dure in strutture commerciali, istituzionali e industriali; pronto all'uso e inodore.",
+  how:"Pronto all'uso. Battericida: agire 1 minuto. Fungicida/virucida (virus con involucro): 15 minuti. Spruzzare/nebulizzare o applicare con panno. In area medica detergere prima. Superfici a contatto alimenti: risciacquare con acqua potabile.",
+  tech:"PMC a quaternario di nuova generazione (didecildimetilammonio): battericida (EN 13697/1276/13727, incl. Listeria e Salmonella), lieviticida/fungicida (EN 1650/13624) e virucida (EN 14476/16777, testato anche su SARS-CoV-2). Inodore.",
+  sell:"Disinfettante PMC pronto all'uso e inodore con tempo battericida di 1 minuto: rapido e pratico per foodservice (HACCP) e sanità. Registrazione e ampio spettro = leva di conformità.",
+  warn:"PMC: rispettare i tempi di contatto (1 min batteri, 15 min funghi/virus). Quaternario cationico: non associare a detergenti anionici."},
+ soquat:{n:"Soquat",s:"Detergente disinfettante deodorante — PMC",cat:"dis",ph:7.5,phc:"neu",fmt:"Tanica 5 L · monodose 30 ml",reg:"PMC Reg. Min. Salute n. 13292",
+  asp:"Liquido verde, profumo fresco pino",dens:"1020±20 g/L",bio:"",val:"n.d.",
+  comp:"Alchil-dimetil-benzil-ammonio cloruro 2 g/100 g, fragranza fresh pine, tensioattivi, sinergizzanti, solubilizzanti, acqua.",
+  clienti:"Aule scolastiche, uffici, magazzini, toilette/WC, bagni, palestre, piscine; mercati, mattatoi e pescherie (a diluizione ridotta).",
+  use:"Deterge, disinfetta e deodora pavimenti, sanitari e superfici lavabili (azione 3-in-1).",
+  how:"Diluire 4–5% (uffici, scuole, bagni, palestre, piscine); 1–2% per mercati/mattatoi/pescherie; monodose 3% (bustina 30 ml in 1 L). Tempo di contatto 5 min batteri, 15 min funghi.",
+  tech:"PMC a sali quaternari (benzalconio cloruro): il tensioattivo facilita la penetrazione e migliora l'attività battericida; sui pavimenti è applicabile anche in lavasciuga. NB: gli anionici neutralizzano i quaternari, non miscelare con detergenti anionici.",
+  sell:"Tre azioni in uno (deterge+disinfetta+deodora) su grandi superfici, anche in monodose pre-dosata: efficienza operativa + registrazione PMC.",
+  warn:"PMC a quaternari: rispettare i tempi di contatto; non miscelare con detergenti anionici."},
+ aersan:{n:"Aersan Permanent Spice",s:"Deodorante super-concentrato per ambienti e bucato",cat:"dis",ph:7.5,phc:"neu",fmt:"750 ml",
+  asp:"Liquido limpido incolore, profumo speziato avvolgente (persistenza ~72h)",dens:"0,95 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici, solventi, fragranze, coformulanti, conservanti.",
+  clienti:"Uffici e sale riunioni, hotel, ristoranti/bar, palestre, reception, negozi.",
+  use:"Neutralizza i cattivi odori e profuma a lungo ambienti interni ad alta frequenza.",
+  how:"Pronto all'uso. Nebulizzare uniformemente, lasciare agire, areare se necessario. Non risciacqua.",
+  tech:"Sistema super-concentrato a evaporazione controllata: non maschera ma neutralizza l'odore, con persistenza fino a 72h.",
+  sell:"Profumazione coordinata con Ekosan Sc Spice: completa l'esperienza olfattiva dell'ambiente, upsell immediato.",warn:""},
+ /* LAVANDERIA */
+ desan:{n:"Desan Np/777",s:"Detersivo in polvere completo per bucato professionale",cat:"laun",ph:11,phc:"alk",fmt:"7 kg",
+  asp:"Polvere, colore caratteristico",dens:"",bio:"",val:"24 mesi",
+  comp:"Tensioattivi, sequestranti, coadiuvanti funzionali, profumo, coloranti.",
+  clienti:"Lavanderie professionali, hotel, strutture sanitarie, comunità.",
+  use:"Lavaggio professionale di biancheria bianca e colorata; efficace anche a basse temperature.",
+  how:"Dosaggi per durezza: prelavaggio 5–10 g/kg, lavaggio 10–20 g/kg secondo acqua e sporco.",
+  tech:"Detersivo completo (tensioattivi + sequestranti): i sequestranti gestiscono la durezza dell'acqua evitando l'ingrigimento.",
+  sell:"Base del ciclo lavanderia a volume: traina la vendita di pretrattante (Presto) e sbiancante (Super Action).",warn:""},
+ presto:{n:"Presto",s:"Pretrattante enzimatico ad alta concentrazione",cat:"laun",ph:8.5,phc:"neu",fmt:"750 ml",
+  asp:"Liquido leggermente opalescente giallo chiaro, profumo delicato",dens:"1,01 g/ml",bio:">90%",val:"24 mesi",
+  comp:"Tensioattivi non ionici, enzimi (lipasi, proteasi, amilasi), coformulanti, sequestranti, conservanti, profumo.",
+  clienti:"Lavanderie, hotel, ristoranti, comunità (capi e biancheria).",
+  use:"Macchie difficili: sugo, erba, caffè, frutta, vino, unto di polsini e colletti.",
+  how:"Spruzzare sulla macchia asciutta, agire 5–10 min senza far asciugare, poi lavare. No seta/lana.",
+  tech:"Blend enzimatico mirato: lipasi (grassi), proteasi (proteine), amilasi (amidi). Agisce a basse temperature = risparmio energetico.",
+  sell:"Riduce i ri-lavaggi e gli scarti: argomento di risparmio concreto e misurabile per la lavanderia.",
+  warn:"Non su seta e lana: le proteasi aggrediscono le fibre proteiche."},
+ superaction:{n:"Super Action",s:"Additivo sbiancante all'ossigeno attivo",cat:"laun",ph:11,phc:"alk",fmt:"7 kg",
+  asp:"Polvere granulare bianca, inodore",dens:"",bio:">90%",val:"24 mesi",
+  comp:"Sbiancanti a base di ossigeno attivo, sequestranti, attivatori, sbiancanti ottici, coformulanti.",
+  clienti:"Alberghi, ristoranti/catering, lavanderie, case di riposo, sanitario, abbigliamento da lavoro.",
+  use:"Ravviva il bianco e potenzia la rimozione macchie, già a basse temperature; delicato su fibre e colori.",
+  how:"Dosare 4–6 g/kg di biancheria, aggiungere nella fase di lavaggio principale.",
+  tech:"Ossigeno attivo (no cloro): sbianca per ossidazione in modo delicato, sicuro sui colori, efficace anche a freddo.",
+  sell:"Sbiancamento senza cloro: potenzia il detersivo e tutela i tessuti. Abbinata fissa a Desan Np/777.",warn:""},
+ /* OXYCARE */
+ boxi:{n:"Boxi",s:"Anticalcare bagno igienizzante e idrorepellente — OxyCare®",cat:"oxy",ph:3,phc:"acid",fmt:"750 ml (cartone 8 pz)",
+  asp:"Liquido incolore, profumo fresco balsamico",dens:"1010±20 g/L",bio:"",val:"n.d.",
+  comp:"Linea OxyCare a base di perossido di idrogeno (ossigeno attivo); senza formaldeide, ipoclorito, acidi/solventi/tensioattivi aggressivi e conservanti.",
+  clienti:"Bagni di hotel, palestre, uffici, sanitario, retail: rubinetteria e WC, piastrelle, box doccia, vasche, specchi e finestre.",
+  use:"Anticalcare pronto all'uso idrorepellente, brillantante, igienizzante e sbiancante per tutto l'ambiente bagno, vetri e specchi compresi.",
+  how:"Erogare tal quale, strofinare la superficie con una spugna e risciacquare.",
+  tech:"Effetto idrorepellente: dopo l'applicazione su box doccia e pareti in vetro l'acqua scorre via velocemente e la superficie asciuga all'istante senza tracce. Contrasta cattivi odori e muffa.",
+  sell:"Un solo prodotto 'all-round' per tutto il bagno (calcare, vetri, specchi, muffa): semplifica il carrello del cliente. Argomento green: ossigeno attivo, senza cloro né acidi aggressivi.",warn:""},
+ xpluri:{n:"Xpluri",s:"Detergente foodservice inodore senza risciacquo — OxyCare®",cat:"oxy",ph:3,phc:"acid",fmt:"750 ml (cartone 8 pz)",
+  asp:"Liquido inodore",dens:"",bio:"",val:"n.d.",
+  comp:"Linea OxyCare a base di perossido di idrogeno; inodore; senza formaldeide, ipoclorito, acidi/solventi/tensioattivi aggressivi e conservanti.",
+  clienti:"Foodservice e ambito HACCP: piani di lavoro, fornelli, arredi in acciaio, utensili, vetrine.",
+  use:"Detergente pronto all'uso inodore e auto-asciugante per la pulizia quotidiana delle superfici a contatto con alimenti; rimuove i residui di cibo senza lasciare tracce.",
+  how:"Erogare tal quale, strofinare con panno monouso; non necessita di risciacquo (risciacquare le superfici a contatto con alimenti secondo HACCP).",
+  tech:"Inodore e igienizzante: ideale dove i profumi del detergente darebbero fastidio (cucine). Effetto lucido sull'acciaio inox; l'uso quotidiano previene muffa e calcare.",
+  sell:"Detergente inodore per cucine professionali in logica HACCP: pulisce e igienizza il piano a contatto alimenti senza profumi invasivi. Leva green OxyCare.",warn:""},
+ plurel:{n:"Plurel",s:"Detergente multifunzione senza risciacquo, pulivetro — OxyCare®",cat:"oxy",ph:4,phc:"acid",fmt:"750 ml (cartone 8 pz)",
+  asp:"Liquido trasparente, profumo fresco balsamico",dens:"1000±20 g/L",bio:"",val:"n.d.",
+  comp:"Linea OxyCare a base di perossido di idrogeno; senza formaldeide, ipoclorito, acidi/solventi/tensioattivi aggressivi e conservanti.",
+  clienti:"Interni e ambiente wellness: mobilio, vetri e infissi, ascensori, piani di lavoro, spogliatoi.",
+  use:"Detergente pronto all'uso igienizzante e auto-asciugante per tutte le superfici nelle pulizie ordinarie; performante su vetri e specchi.",
+  how:"Erogare tal quale, strofinare con panno monouso; non necessita di risciacquo.",
+  tech:"Auto-asciugante e lucidante sulle superfici specchiate: agisce rapidamente senza lasciare tracce, aiuta a rimuovere la muffa e previene i cattivi odori.",
+  sell:"Un multifunzione che fa anche da pulivetro: riduce il numero di referenze che il cliente deve tenere. Performante su acciaio e schermi, ideale wellness.",warn:""},
+ pavixan:{n:"Pavixan",s:"Detergente pavimenti concentrato a schiuma frenata — OxyCare®",cat:"oxy",ph:4,phc:"acid",fmt:"Tanica 5 L (4 pz)",
+  asp:"Liquido azzurro, profumo fresco balsamico",dens:"1010±20 g/L",bio:"",val:"n.d.",
+  comp:"Linea OxyCare a base di perossido di idrogeno; senza formaldeide, ipoclorito, acidi/solventi/tensioattivi aggressivi e conservanti.",
+  clienti:"Pavimenti e superfici dure (esclusi marmo pregiato e granito), cucine, mobilio, piani di lavoro; utilizzabile su superfici a contatto con alimenti.",
+  use:"Detergente manutentore concentrato a schiuma frenata, polivalente; brillantante sui pavimenti e sbiancante sulle fughe, igienizzante.",
+  how:"Diluire 2–3% per le pulizie giornaliere; applicare con mop, frange o microfibra oppure con lavasciuga. Non necessita di risciacquo.",
+  tech:"Schiuma frenata: adatto alla lavasciuga. Concentrato (costo d'uso basso), brillantante sui pavimenti e sbiancante sulle fughe; combatte cattivi odori e muffa.",
+  sell:"Il pavimenti OxyCare concentrato: bassa schiuma per lavasciuga + sbiancante sulle fughe + sicuro su superfici a contatto alimenti. Argomento green e di resa.",
+  warn:"Non utilizzare su marmo pregiato e granito."},
+};
+const CATS = {
+  food:{name:"Cucina / Foodservice",weight:23},
+  bath:{name:"Bagno / Sanitari e anticalcare",weight:10.5},
+  floor:{name:"Pavimenti e superfici",weight:23},
+  ind:{name:"Industriale / Sgrassanti pesanti",weight:10.5},
+  dis:{name:"Igiene ambientale e disinfezione",weight:10.5},
+  laun:{name:"Lavanderia",weight:10.5},
+  oxy:{name:"OxyCare® — Quality Cleaning",weight:12},
+};
+function prodsOf(c){return Object.keys(P).filter(k=>P[k].cat===c)}
+function phClass(p){if(p===null)return"neu";if(p<6)return"acid";if(p>8.5)return"alk";return"neu"}
+function phLabel(p){return p===null?"n.a.":("pH "+String(p).replace('.',','))}
+
+/* ============ MODULI ============ */
+const MODULES=[
+ {id:"home",t:"Home"},
+ {id:"fond",t:"Fondamentali",ic:"\U0001F9EA",sub:"Chimica + metodo, in pillole"},
+ {id:"food",t:"Cucina / Foodservice",ic:"\U0001F37D️",cat:"food"},
+ {id:"bath",t:"Bagno / Anticalcare",ic:"\U0001F6BF",cat:"bath"},
+ {id:"floor",t:"Pavimenti e superfici",ic:"\U0001F9F9",cat:"floor"},
+ {id:"ind",t:"Industriale",ic:"⚙️",cat:"ind"},
+ {id:"dis",t:"Igiene e disinfezione",ic:"\U0001F9A0",cat:"dis"},
+ {id:"laun",t:"Lavanderia",ic:"\U0001F455",cat:"laun"},
+ {id:"oxy",t:"Linea OxyCare®",ic:"\U0001F4A7",cat:"oxy"},
+ {id:"cerca",t:"Cerca prodotto"},
+];
+const NAVSEQ=["fond","food","bath","floor","ind","dis","laun","oxy"];
+
+/* ============ FONDAMENTALI (Modulo 0, in pillole, ancorato ai prodotti) ============ */
+const sinnerHTML=`<div class="sinner">
+ <svg viewBox="0 0 120 120" role="img" aria-label="Cerchio di Sinner">
+  <path d="M60 60 L60 6 A54 54 0 0 1 114 60 Z" fill="#1F4E96"/><path d="M60 60 L114 60 A54 54 0 0 1 60 114 Z" fill="#E0531E"/>
+  <path d="M60 60 L60 114 A54 54 0 0 1 6 60 Z" fill="#2e8b57"/><path d="M60 60 L6 60 A54 54 0 0 1 60 6 Z" fill="#d98a00"/>
+  <circle cx="60" cy="60" r="21" fill="#fff"/><text x="60" y="58" text-anchor="middle" font-size="10" font-weight="700" fill="#16202e">Cerchio</text><text x="60" y="69" text-anchor="middle" font-size="9" fill="#5b6470">di Sinner</text></svg>
+ <ul><li><span class="sw" style="background:#1F4E96"></span><b>Chimica</b> &mdash; il prodotto (es. Green Energy concentrato)</li>
+ <li><span class="sw" style="background:#E0531E"></span><b>Azione meccanica</b> &mdash; strofinare, lavasciuga</li>
+ <li><span class="sw" style="background:#2e8b57"></span><b>Temperatura</b> &mdash; abbassata dagli enzimi di Presto</li>
+ <li><span class="sw" style="background:#d98a00"></span><b>Tempo</b> &mdash; posa e contatto (Grill 1&ndash;5 min, PMC)</li></ul></div>`;
+const scaleHTML=`<div class="scale"><div style="background:#c0392b;flex:2">ACIDI 0&ndash;6<br>calcare, ruggine</div><div style="background:#2e8b57;flex:1.4">NEUTRO ~7<br>quotidiano</div><div style="background:#2f5fb0;flex:2">ALCALINI 9&ndash;14<br>grassi, oli</div></div>`;
+const FOND=[
+ {h:"Cosa vuol dire pulire",b:"Pulire &egrave; <b>staccare</b> lo sporco e tenerlo <b>sospeso</b> nell'acqua finch&eacute; lo risciacqui. Il detergente bagna, distacca, emulsiona e impedisce il rideposito. &Egrave; il motivo per cui serve il prodotto giusto, non &laquo;pi&ugrave; prodotto&raquo;."},
+ {h:"La regola d'oro: organico vs minerale",b:"<b>Sporco organico</b> (grassi, oli, proteine, unto) &rarr; prodotti <b>alcalini</b> (pH alto). <b>Sporco minerale</b> (calcare, ruggine, cemento) &rarr; prodotti <b>acidi</b> (pH basso). Questa sola regola spiega l'80% della gamma Sochil.",scale:true},
+ {h:"La scala del pH, con i tuoi prodotti",b:"Acidi forti: <b>Decrost</b>, <b>Limelock</b> (~0&ndash;1). Acidi medi: <b>Batsan</b> (2,5), <b>Brilux</b> (3). Neutri: <b>Ekosan</b>, <b>Pavilux</b> (~7,5). Alcalini forti: <b>Master Matic</b> (13,2), <b>Viaol</b>, <b>Ergonet</b> (13&ndash;14). Pi&ugrave; ci si allontana da 7, pi&ugrave; il prodotto &egrave; potente e va usato con cautela."},
+ {h:"Tensioattivi: schiuma e disinfezione",b:"<b>Anionici</b> = molto sgrassanti e schiumosi. <b>Non ionici</b> = sgrassano con poca schiuma (ideali in lavasciuga: Sanson, Red Energy). <b>Cationici/quaternari</b> = puliscono poco ma <b>disinfettano</b> (base di Soquat, Igiesan RTU). Regola: quaternari e anionici si <b>annullano</b> &rarr; non mischiarli."},
+ {h:"Il cerchio di Sinner: i 4 fattori",b:"Ogni pulizia combina <b>chimica</b>, <b>azione meccanica</b>, <b>temperatura</b> e <b>tempo</b>: se abbassi una leva, alza un'altra. Con <b>Presto</b> (enzimi) lavi a bassa temperatura; su grasso carbonizzato con <b>Grill</b> servono pi&ugrave; tempo e strofinatura; un concentrato come <b>Green Energy</b> alza la chimica e riduce la fatica.",sinner:true},
+ {h:"Tempo di contatto: la regola dei disinfettanti",b:"Un disinfettante agisce solo se la superficie <b>resta bagnata</b> per il tempo indicato: <b>Igiesan RTU</b> 1 min batteri / 15 min funghi-virus; <b>Soquat</b> 5 / 15 min; <b>Alcovir</b> ~3 min. Spruzzare e asciugare subito = disinfezione nulla. &Egrave; il primo errore da correggere dal cliente."},
+ {h:"Codice colore: niente contaminazione crociata",b:"Panni e attrezzi separati per zona: <span class='cc red'>rosso</span> servizi igienici (Batsan, Limelock), <span class='cc yel'>giallo</span> lavabi e sanitari (Igiesan RTU), <span class='cc grn'>verde</span> cucina e food (Net+, Xpluri), <span class='cc blu'>blu</span> superfici generali e uffici (Plurel, Pavilux). Proporlo ti rende esperto di <i>metodo</i>, non solo di prodotto."},
+ {h:"HACCP in cucina: la sequenza giusta",b:"Sulle superfici a contatto con alimenti: <b>detergere &rarr; risciacquare &rarr; disinfettare &rarr; risciacquare con acqua potabile</b>. Detergi con <b>Xpluri</b> (OxyCare, inodore) o <b>Net+</b>; disinfetti con <b>Igiesan RTU</b> (PMC, 1 min). Gli igienizzanti OxyCare&reg; non sostituiscono un PMC dove serve la disinfezione."},
+ {h:"Sicurezza: DPI e &laquo;mai miscelare&raquo;",b:"Sui forti &mdash; acidi come <b>Decrost</b> (pH 0,5) o alcalini come <b>Ergonet</b> (pH 13,5) &mdash; usa <b>guanti e occhiali</b> e area l'ambiente. <b>Mai acido + cloro</b> (gas tossico). <b>Mai un disinfettante quaternario + un detergente anionico</b> (si annullano). Chi insegna la sicurezza vende di pi&ugrave;, non di meno."},
+];
+
+/* ============ INTRO FAMIGLIE (come si vende, in breve) ============ */
+const FAMI={
+ food:"Sporco organico (grassi) &rarr; alcalini; calcare di lavastoviglie &rarr; acidi. Vendi il <b>ciclo completo</b> (Master Matic + Brilux + Decrost) e distingui il quotidiano (Net+, Deterjet) dallo sporco pesante (Ultranet, Grill, Fatpul).",
+ bath:"Il nemico &egrave; minerale: calcare e sapone &rarr; acidi. Presenta la <b>scala</b> Batsan (quotidiano) &rarr; Limelock (ostinato, gel verticale). Ricorda: <i>igienizzare</i> non &egrave; <i>disinfettare</i> &mdash; per disinfettare serve un PMC.",
+ floor:"Tre risposte: quotidiano <b>neutro</b> (delicato sulle finiture), aree trafficate <b>alcalino a bassa schiuma</b> (lavasciuga), <b>protezione</b> (Splende). Pi&ugrave; la superficie &egrave; pregiata, pi&ugrave; il pH deve restare neutro.",
+ ind:"Sporco aggressivo (oli minerali, grassi pesanti) &rarr; alcalini forti. Scegli per <b>substrato e metodo</b>: Viaol (metalli, pre-verniciatura), Red Energy/Ergonet (lavasciuga, bassa schiuma), Green Energy (sgrassaggio generale).",
+ dis:"Qui si <b>disinfetta</b>: in Italia i disinfettanti per superfici sono <b>PMC</b> registrati al Ministero. Detergere &ne; disinfettare; rispetta il <b>tempo di contatto</b>. Tre PMC complementari: Igiesan RTU, Alcovir, Soquat.",
+ laun:"Sporco organico complesso: <b>enzimi</b> (bassa temperatura, risparmio) + detersivo + <b>ossigeno attivo</b> (no cloro, sicuro sui colori). Vendi il ciclo Presto &rarr; Desan Np/777 &rarr; Super Action.",
+ oxy:"Linea all'<b>ossigeno attivo</b> (perossido di idrogeno): igienizza ed &egrave; ottimo detergente, senza cloro, acidi aggressivi o profumi invasivi. Quattro prodotti coprono bagno, cucina, interni e pavimenti. Nota: <i>igienizzante</i>, non PMC.",
+};
+
+/* ============ STATO ============ */
+/* ============ UI HELPERS ============ */
+function toast(m,t){const c=document.getElementById('toasts');if(!c)return;const e=document.createElement('div');e.className='toast '+(t||'');e.textContent=m;c.appendChild(e);setTimeout(()=>e.remove(),3000);}
+const COBRAND={on:true,name:"Lyreco"};
+function initCobrand(){const el=document.getElementById('cobrand');if(el)el.hidden=!COBRAND.on;}
+
+/* ============ PRODUCT CARD ============ */
+function pcardHTML(k){const p=P[k];
+ const s=(p.n+' '+p.s+' '+p.use+' '+(p.clienti||'')+' '+(p.comp||'')+' '+(p.how||'')+' '+(CATS[p.cat]?CATS[p.cat].name:'')).toLowerCase().replace(/"/g,'');
+ const dt=[`<span><b>Aspetto:</b> ${p.asp}</span>`,`<span><b>pH:</b> ${phLabel(p.ph)}</span>`,p.dens?`<span><b>Densità:</b> ${p.dens}</span>`:'',p.bio?`<span><b>Biodegr.:</b> ${p.bio}</span>`:'',`<span><b>Validità:</b> ${p.val}</span>`,`<span><b>Formati:</b> ${p.fmt}</span>`].join('');
+ return `<div class="pcard" data-s="${s}" data-cat="${p.cat}" data-ph="${phClass(p.ph)}" data-reg="${p.reg?'pmc':''}">
+  <div class="pc-h"><div><div class="nm">${p.n}</div><div class="sb">${p.s}</div></div><span class="ph ${phClass(p.ph)}">${phLabel(p.ph)}</span></div>
+  <div class="pc-b">
+   <div class="kv"><b>A chi serve:</b> ${p.clienti}</div>
+   <div class="sell"><b>Perché si vende.</b> ${p.sell}</div>
+   ${p.warn?`<div class="warn"><b>Attenzione.</b> ${p.warn}</div>`:''}
+   <details class="more"><summary>Dettagli e uso</summary>
+    <div class="kv" style="margin-top:8px"><b>Dove/uso:</b> ${p.use}</div>
+    <div class="kv"><b>Come si usa:</b> ${p.how}</div>
+    <div class="kv"><b>Composizione:</b> ${p.comp}</div>
+    ${p.reg?`<div class="kv"><b>Registrazione:</b> ${p.reg}</div>`:''}
+    ${p.tech?`<div class="tech"><b>Nota tecnica.</b> ${p.tech}</div>`:''}
+    <div class="dt">${dt}</div>
+   </details>
+  </div></div>`;
+}
+
+/* ============ RICERCA ============ */
+let activeFilter='all';
+function setFilter(el){document.querySelectorAll('#catfilters .fchip').forEach(c=>c.classList.remove('active'));el.classList.add('active');activeFilter=el.dataset.f;applyFilters();}
+function applyFilters(){const inp=document.getElementById('gsearch');const q=(inp?inp.value:'').toLowerCase().trim();let n=0;
+ document.querySelectorAll('#prodlist .pcard').forEach(d=>{let ok=true;
+  if(activeFilter&&activeFilter!=='all'){const pr=activeFilter.split(':'),k=pr[0],v=pr[1];if(k==='cat')ok=d.dataset.cat===v;else if(k==='ph')ok=d.dataset.ph===v;else if(k==='reg')ok=d.dataset.reg==='pmc';}
+  if(ok&&q)ok=d.dataset.s.includes(q);d.style.display=ok?'':'none';if(ok)n++;});
+ const sc=document.getElementById('searchcount');if(sc)sc.textContent=n+' prodotti su '+Object.keys(P).length;}
+
+/* ============ PAGINE ============ */
+function page_home(){
+ let cards=`<div class="mcard fond" onclick="go('fond')"><div class="ic">\U0001F9EA</div><div class="mt">Fondamentali</div><div class="mm">Chimica + metodo, in pillole</div></div>`;
+ MODULES.filter(m=>m.cat).forEach(m=>{cards+=`<div class="mcard" onclick="go('${m.id}')"><div class="ic">${m.ic}</div><div class="mt">${m.t}</div><div class="mm">${prodsOf(m.cat).length} prodotti</div></div>`;});
+ cards+=`<div class="mcard search" onclick="go('cerca')"><div class="ic">\U0001F50E</div><div class="mt">Cerca prodotto</div><div class="mm">Trova al volo tra i 34</div></div>`;
+ return `<div class="home-hero"><h1>Impara la gamma Sochil in fretta</h1>
+  <p>Micro-lezioni e quiz, direttamente dal telefono. Tutto applicato ai prodotti che vendi: cosa sono, a chi proporli, perché vincono.</p>
+  <div class="cta"><button class="btn pri" onclick="go('fond')">Vai ai Fondamentali</button><button class="btn ghost" onclick="go('cerca')">\U0001F50E Cerca un prodotto</button></div></div>
+  <div class="sec-t">La gamma per famiglia</div>
+  <div class="mgrid">${cards}</div>`;
+}
+function page_fond(){let h=`<button class="back" onclick="go('home')">← Home</button>
+ <h2 class="pg">Fondamentali</h2><p class="lead">Le basi di chimica e di metodo, in pillole e con i tuoi prodotti. Bastano 10 minuti per capire <i>perché</i> ogni prodotto funziona.</p><div class="card">`;
+ FOND.forEach(s=>{h+=`<h3>${s.h}</h3><p>${s.b}</p>${s.scale?scaleHTML:''}${s.sinner?sinnerHTML:''}`;});
+ h+=`</div>`;return h;}
+function page_fam(m){let h=`<button class="back" onclick="go('home')">← Home</button>
+ <h2 class="pg">${m.t}</h2><div class="card"><p>${FAMI[m.cat]}</p></div>
+ <div class="sec-t">${prodsOf(m.cat).length} prodotti · tocca &laquo;Dettagli e uso&raquo; per la scheda completa</div>
+ <div id="prodlist">`;
+ prodsOf(m.cat).forEach(k=>h+=pcardHTML(k));h+=`</div>`;return h;}
+function page_cerca(){activeFilter='all';
+ let chips=`<span class="fchip active" data-f="all" onclick="setFilter(this)">Tutte (${Object.keys(P).length})</span>`;
+ Object.keys(CATS).forEach(c=>chips+=`<span class="fchip" data-f="cat:${c}" onclick="setFilter(this)">${CATS[c].name}</span>`);
+ chips+=`<span class="fchip" data-f="ph:acid" onclick="setFilter(this)">Acidi</span><span class="fchip" data-f="ph:neu" onclick="setFilter(this)">Neutri</span><span class="fchip" data-f="ph:alk" onclick="setFilter(this)">Alcalini</span><span class="fchip" data-f="reg:pmc" onclick="setFilter(this)">PMC</span>`;
+ let h=`<button class="back" onclick="go('home')">← Home</button><h2 class="pg">Cerca e consulta</h2>
+  <p class="lead">Digita un nome, un tipo di sporco ("calcare", "grasso", "inchiostro"), una superficie o un ambiente. Oppure filtra.</p>
+  <input class="search-in" id="gsearch" placeholder="\U0001F50E Cerca per nome, sporco, superficie, cliente..." oninput="applyFilters()">
+  <div class="filters" id="catfilters">${chips}</div><div id="searchcount" class="lead" style="margin:6px 4px"></div><div id="prodlist">`;
+ Object.keys(P).forEach(k=>h+=pcardHTML(k));h+=`</div>`;return h;}
+
+/* ============ ROUTER ============ */
+let current="home";
+function go(id){current=id;const m=MODULES.find(x=>x.id===id);let html='';
+ if(id==='home')html=page_home();
+ else if(id==='fond')html=page_fond();
+ else if(id==='cerca')html=page_cerca();
+ else if(m&&m.cat)html=page_fam(m);
+ const main=document.getElementById('main');main.innerHTML=html;
+ if(id!=='home'&&id!=='cerca'){const i=NAVSEQ.indexOf(id);const pid=i>0?NAVSEQ[i-1]:null,nid=i>=0&&i<NAVSEQ.length-1?NAVSEQ[i+1]:null;
+  const lab=x=>MODULES.find(m=>m.id===x).t;
+  main.insertAdjacentHTML('beforeend',`<div class="modnav"><button ${pid?'':'disabled'} ${pid?`onclick="go('${pid}')"`:''}><span class="s">← Precedente</span>${pid?lab(pid):'—'}</button><button class="nx" ${nid?'':'disabled'} ${nid?`onclick="go('${nid}')"`:''}><span class="s">Successivo →</span>${nid?lab(nid):'—'}</button></div>`);}
+ window.scrollTo(0,0);}
+go('home');initCobrand();
+</script>
+</body>
+</html>
