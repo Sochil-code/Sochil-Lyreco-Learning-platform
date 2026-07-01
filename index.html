@@ -13,7 +13,9 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);backdro
 .hbar{display:flex;align-items:center;gap:10px;max-width:860px;margin:0 auto}
 .logo{font-weight:800;font-size:18px;color:var(--blue);letter-spacing:.3px;line-height:1}
 .logo span{color:var(--orange)}
+.logo svg{height:27px;width:auto;display:block}
 .tag{font-size:11px;font-weight:700;color:#fff;background:var(--orange);border-radius:20px;padding:3px 10px;text-transform:uppercase;letter-spacing:.4px}
+.demo{font-size:10px;font-weight:800;color:#d98a00;border:1px dashed #d98a00;border-radius:20px;padding:2px 8px;text-transform:uppercase;letter-spacing:1px}
 .cobrand{display:flex;align-items:center;gap:7px;border-left:1px solid var(--line);padding-left:10px}
 .cb-sep{font-size:10px;color:var(--muted)}.cb-logo{font-weight:800;color:#E2001A;font-size:14px}
 .cb-logo svg{height:23px;width:auto;display:block}
@@ -31,6 +33,7 @@ header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.96);backdro
 .mcard:active{transform:scale(.98)}
 .mcard:hover{border-color:var(--orange);box-shadow:0 8px 22px rgba(20,32,46,.08)}
 .mcard .ic{font-size:22px;line-height:1}
+.mcard .ic svg{width:30px;height:30px;display:block}
 .mcard .mt{font-weight:700;font-size:14.5px;color:var(--blue-d)}
 .mcard .mm{font-size:12px;color:var(--muted);margin-top:auto}
 .mcard.fond{background:linear-gradient(135deg,#fff,var(--soft-o))}
@@ -59,6 +62,10 @@ h2.pg{font-size:21px;color:var(--blue);margin:6px 4px 2px}
 .pc-h{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line)}
 .pc-h .nm{font-weight:800;color:var(--ink);font-size:15.5px}
 .pc-h .sb{font-size:12px;color:var(--muted)}
+.pthumb{width:72px;height:72px;flex-shrink:0;border-radius:10px;background:#f0f3f7;border:1px solid var(--line);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pthumb::after{content:"foto";font-size:10px;color:#9aa3ad;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.pthumb img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;background:#fff}
+.pbig{display:block;width:100%;max-height:200px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px;margin:8px 0}
 .ph{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:13px;margin-left:auto;color:#fff;white-space:nowrap}
 .ph.acid{background:#c0392b}.ph.neu{background:#2e8b57}.ph.alk{background:#2f5fb0}
 .pc-b{padding:12px 14px;font-size:13.5px;display:flex;flex-direction:column;gap:8px}
@@ -66,6 +73,7 @@ h2.pg{font-size:21px;color:var(--blue);margin:6px 4px 2px}
 .sell{background:var(--soft-o);border-left:3px solid var(--orange);padding:8px 11px;border-radius:7px}
 .warn{background:#fff4f0;border-left:3px solid #c0392b;padding:8px 11px;border-radius:7px}
 .tech{background:#eef3fb;border-left:3px solid var(--blue);padding:8px 11px;border-radius:7px}
+.appline{background:#eef7ee;border-left:3px solid #2e8b57;padding:7px 11px;border-radius:7px;font-size:13px}
 details.more{border-top:1px dashed var(--line);padding-top:8px}
 details.more summary{cursor:pointer;color:var(--blue);font-weight:700;font-size:13px;list-style:none}
 details.more summary::-webkit-details-marker{display:none}
@@ -97,7 +105,7 @@ footer{text-align:center;color:var(--muted);font-size:11.5px;padding:22px 8px 0;
 <body>
 <div class="app">
 <header><div class="hbar">
-  <div class="logo">SOCHIL<span>.</span></div><div class="tag">Learning</div>
+  <div class="logo">SOCHIL<span>.</span></div><div class="tag">Learning</div><span class="demo">Demo</span>
   <div class="cobrand" id="cobrand"><span class="cb-sep">con</span><span class="cb-logo"><svg viewBox="0 0 250 84" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lyreco"><path d="M4,42 C30,12 72,5 110,9 C74,16 36,23 12,46 C9,45 6,43 4,42 Z" fill="#93C01F"/><path d="M246,42 C214,70 172,77 136,73 C172,66 210,59 238,38 C241,39 244,40 246,42 Z" fill="#93C01F"/><text x="125" y="61" text-anchor="middle" font-family="'Arial Black','Segoe UI',Arial,sans-serif" font-weight="900" font-size="50" letter-spacing="-1.5" fill="#312783">Lyreco</text></svg></span></div>
 </div></header>
 <main id="main"></main>
@@ -404,7 +412,7 @@ const P = {
 };
 const CATS = {
   food:{name:"Cucina / Foodservice",weight:23},
-  bath:{name:"Bagno / Sanitari e anticalcare",weight:10.5},
+  bath:{name:"Bagno",weight:10.5},
   floor:{name:"Pavimenti e superfici",weight:23},
   ind:{name:"Industriale / Sgrassanti pesanti",weight:10.5},
   dis:{name:"Igiene ambientale e disinfezione",weight:10.5},
@@ -418,18 +426,19 @@ function phLabel(p){return p===null?"n.a.":("pH "+String(p).replace('.',','))}
 /* ============ MODULI ============ */
 const MODULES=[
  {id:"home",t:"Home"},
- {id:"fond",t:"Fondamentali",ic:"\U0001F9EA",sub:"Chimica + metodo, in pillole"},
- {id:"food",t:"Cucina / Foodservice",ic:"\U0001F37D️",cat:"food"},
- {id:"bath",t:"Bagno / Anticalcare",ic:"\U0001F6BF",cat:"bath"},
- {id:"floor",t:"Pavimenti e superfici",ic:"\U0001F9F9",cat:"floor"},
+ {id:"fond",t:"Fondamentali",ic:"",sub:"Chimica + metodo, in pillole"},
+ {id:"food",t:"Cucina / Foodservice",ic:"",cat:"food"},
+ {id:"bath",t:"Bagno",ic:"",cat:"bath"},
+ {id:"floor",t:"Pavimenti e superfici",ic:"",cat:"floor"},
  {id:"ind",t:"Industriale",ic:"⚙️",cat:"ind"},
- {id:"dis",t:"Igiene e disinfezione",ic:"\U0001F9A0",cat:"dis"},
- {id:"laun",t:"Lavanderia",ic:"\U0001F455",cat:"laun"},
- {id:"oxy",t:"Linea OxyCare®",ic:"\U0001F4A7",cat:"oxy"},
+ {id:"dis",t:"Igiene e disinfezione",ic:"",cat:"dis"},
+ {id:"laun",t:"Lavanderia",ic:"",cat:"laun"},
+ {id:"oxy",t:"Linea OxyCare®",ic:"",cat:"oxy"},
  {id:"cerca",t:"Cerca prodotto"},
 ];
 const NAVSEQ=["fond","food","bath","floor","ind","dis","laun","oxy"];
 
+const ICONS={fond:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M9 3h6'/><path d='M10 3v6l-5 8a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-8V3'/><path d='M7.5 14h9'/></svg>",food:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3v6a2 2 0 0 0 2 2v10'/><path d='M8 3v5'/><path d='M10 3v5'/><path d='M15 3c-1.2 1.2-1.6 3-1.6 5.5 0 1.4 .8 2.2 2 2.2V21'/></svg>",bath:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3v4'/><path d='M5 12a7 7 0 0 1 14 0Z'/><path d='M8 16v1'/><path d='M12 16v2'/><path d='M16 16v1'/></svg>",floor:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3v9'/><path d='M7.5 12h9l-1.2 6.6a2 2 0 0 1-2 1.4h-2.6a2 2 0 0 1-2-1.4Z'/><path d='M9 16h6'/></svg>",ind:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3.2'/><path d='M12 2v3M12 19v3M22 12h-3M5 12H2M18.9 18.9l-2.1-2.1M7.2 7.2 5.1 5.1M18.9 5.1l-2.1 2.1M7.2 16.8l-2.1 2.1'/></svg>",dis:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='8' y='8' width='8' height='13' rx='2'/><path d='M10 8V6h4v2'/><path d='M10 6V4h5'/><path d='M16 4h2.5M16 4l2.2-1.4M16 4l2.2 1.4'/></svg>",laun:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='3' width='16' height='18' rx='2'/><circle cx='12' cy='13' r='4.5'/><circle cx='12' cy='13' r='1.4'/><path d='M7 6h.01M10 6h.01'/></svg>",oxy:"<svg viewBox='0 0 24 24'><circle cx='11' cy='13' r='7.7' fill='none' stroke='#8BC53F' stroke-width='3.3' stroke-linecap='round' stroke-dasharray='40 12' transform='rotate(-35 11 13)'/><circle cx='17.6' cy='5.6' r='1.95' fill='#8BC53F'/></svg>",cerca:"<svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.3-4.3'/></svg>"};
 /* ============ FONDAMENTALI (Modulo 0, in pillole, ancorato ai prodotti) ============ */
 const sinnerHTML=`<div class="sinner">
  <svg viewBox="0 0 120 120" role="img" aria-label="Cerchio di Sinner">
@@ -464,6 +473,9 @@ const FAMI={
  oxy:"Linea all'<b>ossigeno attivo</b> (perossido di idrogeno): igienizza ed &egrave; ottimo detergente, senza cloro, acidi aggressivi o profumi invasivi. Quattro prodotti coprono bagno, cucina, interni e pavimenti. Nota: <i>igienizzante</i>, non PMC.",
 };
 
+/* ============ MODO D'USO (applicazione, per tutti i prodotti) ============ */
+const APP={grill:"Manuale: spruzzo + panno/spazzola, poi risciacquo",netplus:"Manuale: spruzzo + panno, poi risciacquo",deterjet:"Manuale: spruzzo + panno (senza risciacquo)",fatpul:"Automatico: serbatoio del forno autopulente (combi/steamer)",mastermatic:"Automatico: dosatore lavastoviglie",brilux:"Automatico: dosatore brillantante (risciacquo lavastoviglie)",decrost:"Manuale: disincrostazione a vasca / in lavastoviglie",ultranet:"Manuale: ammollo, spruzzo + panno; tal quale su sporco pesante",batsan:"Manuale: spruzzo + panno/spugna, poi risciacquo",ipogel:"Manuale: spugna/panno (puro o diluito), poi risciacquo",limelock:"Manuale: spugna/panno (gel), ideale su verticali, poi risciacquo",ekosan:"Diluito: mop, frange microfibra, lavasciuga",pavilux:"Diluito: frangia microfibra, lavasciuga, mop (o spray)",sanson:"Diluito: lavasciuga, mop, frange microfibra",splende:"Diluito: mop o lavasciuga (bassa schiuma)",detersolvs:"Manuale: vello/spugna + stecca (metodo vetri)",duflash:"Pronto: schiuma spray + panno",deink:"Manuale: spruzzo + panno, poi risciacquo se necessario",tekok:"Manuale: spruzzo + panno microfibra o carta monouso",greenenergy:"Diluito: lavasciuga, mop/frange microfibra, idropulitrice",ergonet:"Diluito: frangia microfibra, lavasciuga, mop",viaol:"Diluito: panno/immersione su metalli; lavasciuga sui pavimenti",redenergy:"Diluito: lavasciuga, idropulitrice, mop",alcovir:"Pronto: spruzzo + panno/carta monouso (agire ~3 min)",igiesanrtu:"Pronto: spruzzo/nebulizzo o panno (rispettare i tempi)",soquat:"Diluito: mop, lavasciuga, panno (anche monodose)",aersan:"Pronto: nebulizzazione in ambiente",desan:"Automatico: dosaggio in lavatrice (polvere)",presto:"Manuale: spruzzo sulla macchia (pretrattamento), poi lavaggio",superaction:"Automatico: dosaggio nel lavaggio (additivo in polvere)",boxi:"Pronto: spugna/panno, poi risciacquo",xpluri:"Pronto: panno/carta monouso (food: risciacquo finale HACCP)",plurel:"Pronto: panno (anche vetri/specchi), senza risciacquo",pavixan:"Diluito: mop, frange microfibra, lavasciuga"};
+
 /* ============ STATO ============ */
 /* ============ UI HELPERS ============ */
 function toast(m,t){const c=document.getElementById('toasts');if(!c)return;const e=document.createElement('div');e.className='toast '+(t||'');e.textContent=m;c.appendChild(e);setTimeout(()=>e.remove(),3000);}
@@ -475,12 +487,13 @@ function pcardHTML(k){const p=P[k];
  const s=(p.n+' '+p.s+' '+p.use+' '+(p.clienti||'')+' '+(p.comp||'')+' '+(p.how||'')+' '+(CATS[p.cat]?CATS[p.cat].name:'')).toLowerCase().replace(/"/g,'');
  const dt=[`<span><b>Aspetto:</b> ${p.asp}</span>`,`<span><b>pH:</b> ${phLabel(p.ph)}</span>`,p.dens?`<span><b>Densità:</b> ${p.dens}</span>`:'',p.bio?`<span><b>Biodegr.:</b> ${p.bio}</span>`:'',`<span><b>Validità:</b> ${p.val}</span>`,`<span><b>Formati:</b> ${p.fmt}</span>`].join('');
  return `<div class="pcard" data-s="${s}" data-cat="${p.cat}" data-ph="${phClass(p.ph)}" data-reg="${p.reg?'pmc':''}">
-  <div class="pc-h"><div><div class="nm">${p.n}</div><div class="sb">${p.s}</div></div><span class="ph ${phClass(p.ph)}">${phLabel(p.ph)}</span></div>
+  <div class="pc-h"><div class="pthumb"><img src="img/${k}.jpg" alt="${p.n}" loading="lazy" onerror="this.remove()"></div><div><div class="nm">${p.n}</div><div class="sb">${p.s}</div></div><span class="ph ${phClass(p.ph)}">${phLabel(p.ph)}</span></div>
   <div class="pc-b">
+   <div class="appline"><b>Modo d'uso:</b> ${APP[k]||p.how}</div>
    <div class="kv"><b>A chi serve:</b> ${p.clienti}</div>
    <div class="sell"><b>Perché si vende.</b> ${p.sell}</div>
    ${p.warn?`<div class="warn"><b>Attenzione.</b> ${p.warn}</div>`:''}
-   <details class="more"><summary>Dettagli e uso</summary>
+   <details class="more"><summary>Dettagli e uso</summary><img class="pbig" src="img/${k}.jpg" alt="${p.n}" loading="lazy" onerror="this.remove()">
     <div class="kv" style="margin-top:8px"><b>Dove/uso:</b> ${p.use}</div>
     <div class="kv"><b>Come si usa:</b> ${p.how}</div>
     <div class="kv"><b>Composizione:</b> ${p.comp}</div>
@@ -502,12 +515,11 @@ function applyFilters(){const inp=document.getElementById('gsearch');const q=(in
 
 /* ============ PAGINE ============ */
 function page_home(){
- let cards=`<div class="mcard fond" onclick="go('fond')"><div class="ic">\U0001F9EA</div><div class="mt">Fondamentali</div><div class="mm">Chimica + metodo, in pillole</div></div>`;
- MODULES.filter(m=>m.cat).forEach(m=>{cards+=`<div class="mcard" onclick="go('${m.id}')"><div class="ic">${m.ic}</div><div class="mt">${m.t}</div><div class="mm">${prodsOf(m.cat).length} prodotti</div></div>`;});
- cards+=`<div class="mcard search" onclick="go('cerca')"><div class="ic">\U0001F50E</div><div class="mt">Cerca prodotto</div><div class="mm">Trova al volo tra i 34</div></div>`;
- return `<div class="home-hero"><h1>Impara la gamma Sochil in fretta</h1>
-  <p>Micro-lezioni e quiz, direttamente dal telefono. Tutto applicato ai prodotti che vendi: cosa sono, a chi proporli, perché vincono.</p>
-  <div class="cta"><button class="btn pri" onclick="go('fond')">Vai ai Fondamentali</button><button class="btn ghost" onclick="go('cerca')">\U0001F50E Cerca un prodotto</button></div></div>
+ let cards=`<div class="mcard fond" onclick="go('fond')"><div class="ic">${ICONS.fond}</div><div class="mt">Fondamentali</div><div class="mm">Chimica + metodo, in pillole</div></div>`;
+ MODULES.filter(m=>m.cat).forEach(m=>{cards+=`<div class="mcard" onclick="go('${m.id}')"><div class="ic">${ICONS[m.id]||m.ic}</div><div class="mt">${m.t}</div><div class="mm">${prodsOf(m.cat).length} prodotti</div></div>`;});
+ cards+=`<div class="mcard search" onclick="go('cerca')"><div class="ic">${ICONS.cerca}</div><div class="mt">Cerca prodotto</div><div class="mm">Trova al volo tra i 34</div></div>`;
+ return `<div class="home-hero"><h1>Conosci la gamma Sochil, vendi con competenza.</h1>
+  <div class="cta"><button class="btn pri" onclick="go('fond')">Vai ai Fondamentali</button><button class="btn ghost" onclick="go('cerca')">Cerca un prodotto</button></div></div>
   <div class="sec-t">La gamma per famiglia</div>
   <div class="mgrid">${cards}</div>`;
 }
@@ -526,7 +538,7 @@ function page_cerca(){activeFilter='all';
  chips+=`<span class="fchip" data-f="ph:acid" onclick="setFilter(this)">Acidi</span><span class="fchip" data-f="ph:neu" onclick="setFilter(this)">Neutri</span><span class="fchip" data-f="ph:alk" onclick="setFilter(this)">Alcalini</span><span class="fchip" data-f="reg:pmc" onclick="setFilter(this)">PMC</span>`;
  let h=`<button class="back" onclick="go('home')">← Home</button><h2 class="pg">Cerca e consulta</h2>
   <p class="lead">Digita un nome, un tipo di sporco ("calcare", "grasso", "inchiostro"), una superficie o un ambiente. Oppure filtra.</p>
-  <input class="search-in" id="gsearch" placeholder="\U0001F50E Cerca per nome, sporco, superficie, cliente..." oninput="applyFilters()">
+  <input class="search-in" id="gsearch" placeholder="Cerca per nome, sporco, superficie, cliente..." oninput="applyFilters()">
   <div class="filters" id="catfilters">${chips}</div><div id="searchcount" class="lead" style="margin:6px 4px"></div><div id="prodlist">`;
  Object.keys(P).forEach(k=>h+=pcardHTML(k));h+=`</div>`;return h;}
 
