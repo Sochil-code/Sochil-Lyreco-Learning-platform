@@ -57,6 +57,16 @@ h2.pg{font-size:21px;color:var(--blue);margin:6px 4px 2px}
 .fchip{font-size:12.5px;padding:7px 13px;border-radius:18px;background:#fff;border:1px solid var(--line);color:var(--muted);cursor:pointer;font-weight:600}
 .fchip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .search-in{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:15px;font-family:inherit}
+.aconv{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.abub{padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.5;max-width:90%}
+.abub.u{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.abub.a{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.abub.a b{color:var(--blue-d)}
+.abub .apk{cursor:pointer;border-bottom:1px dotted currentColor}
+.arow{display:flex;gap:8px;margin-top:6px}
+.arow .search-in{flex:1}
+.achip{cursor:pointer}
+.mcard.assist{background:linear-gradient(135deg,#fff,#e7f0ff)}
 .search-in:focus{outline:none;border-color:var(--blue)}
 .pcard{border:1px solid var(--line);border-radius:14px;margin:11px 0;overflow:hidden;background:#fff}
 .pc-h{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line)}
@@ -429,6 +439,7 @@ function phLabel(p){return p===null?"n.a.":("pH "+String(p).replace('.',','))}
 /* ============ MODULI ============ */
 const MODULES=[
  {id:"home",t:"Home"},
+ {id:"assist",t:"Assistente"},
  {id:"fond",t:"Fondamentali",ic:"",sub:"Chimica + metodo, in pillole"},
  {id:"food",t:"Cucina / Foodservice",ic:"",cat:"food"},
  {id:"bath",t:"Bagno",ic:"",cat:"bath"},
@@ -530,6 +541,7 @@ function applyFilters(){const inp=document.getElementById('gsearch');const q=(in
 function page_home(){
  let cards=`<div class="mcard fond" onclick="go('fond')"><div class="ic">${ICONS.fond}</div><div class="mt">Fondamentali</div><div class="mm">Chimica + metodo, in pillole</div></div>`;
  MODULES.filter(m=>m.cat).forEach(m=>{cards+=`<div class="mcard" onclick="go('${m.id}')"><div class="ic">${ICONS[m.id]||m.ic}</div><div class="mt">${m.t}</div><div class="mm">${prodsOf(m.cat).length} prodotti</div></div>`;});
+ cards+=`<div class="mcard assist" onclick="go('assist')"><div class="ic"><svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12a8 8 0 0 1-11.5 7.2L4 20l.9-4.4A8 8 0 1 1 21 12Z'/><path d='M8.5 11h7M8.5 14h4'/></svg></div><div class="mt">Assistente</div><div class="mm">Chiedi e ricevi il consiglio</div></div>`;
  cards+=`<div class="mcard search" onclick="go('cerca')"><div class="ic">${ICONS.cerca}</div><div class="mt">Cerca prodotto</div><div class="mm">Trova al volo tra i 34</div></div>`;
  return `<div class="home-hero"><h1>Conosci la gamma Sochil, vendi con competenza.</h1>
   <div class="cta"><button class="btn pri" onclick="go('fond')">Vai ai Fondamentali</button><button class="btn ghost" onclick="go('cerca')">Cerca un prodotto</button></div></div>
@@ -556,14 +568,136 @@ function page_cerca(){activeFilter='all';
  Object.keys(P).forEach(k=>h+=pcardHTML(k));h+=`</div>`;return h;}
 
 /* ============ ROUTER ============ */
+/* ================= ASSISTENTE PRODOTTI (offline, deterministico, solo catalogo) ================= */
+function aNorm(s){return (s||"").toLowerCase();}
+function aTok(s){return aNorm(s).split(/[^0-9a-zàèéìòù]+/).filter(Boolean);}
+function aStem(w){return w.length>4?w.replace(/[aeiou]$/,""):w;}
+function aWordIn(text,term){var st=aStem(term);return aNorm(text).split(/[^0-9a-zàèéìòù]+/).some(function(w){return w&&w.indexOf(st)===0;});}
+function aHas(q,arr){return arr.some(function(w){return q.indexOf(w)>=0;});}
+var A_SURF={
+ marmo:["marmo","marmi","marmoreo","marmette","botticino","carrara","calacatta"],
+ granito:["granito","granitico"],travertino:["travertino"],ardesia:["ardesia","lavagna"],
+ porfido:["porfido","porfidi"],pietra:["pietra","pietre","sasso","quarzite","arenaria","beola","luserna","serena"],
+ gres:["gres","grès","porcellanato","monocottura","bicottura","mattonelle","piastrelle"],
+ ceramica:["ceramica","ceramico","maiolica","smaltato"],klinker:["klinker","clinker"],
+ cotto:["cotto","terracotta","laterizio","pianelle"],graniglia:["graniglia","granigliato","seminato","terrazzo","palladiana","veneziana"],
+ pvc:["pvc","vinile","vinilico","lvt"],linoleum:["linoleum","marmoleum"],gomma:["gomma","caucciù"],
+ cemento:["cemento","calcestruzzo","cementizio","massetto"],resina:["resina","epossidic","poliuretanic","autolivellante","microcemento"],
+ "acciaio inox":["inox","inossidabile"],acciaio:["acciaio"],alluminio:["alluminio","allumino","anticorodal"],
+ ferro:["ferro","ghisa"],rame:["rame","ramato"],ottone:["ottone","bronzo"],zinco:["zinco","zincat"],
+ vetro:["vetro","vetri","cristallo","vetrata","vetrate"],specchi:["specchi","specchio"],
+ legno:["legno","ligneo","tavolato"],parquet:["parquet","listoni","doghe","prefinito"],laminato:["laminato","melaminico"],
+ plexiglass:["plexiglass","policarbonato","metacrilato"],sanitari:["sanitari","water","bidet","lavabo","orinatoi","turche"],
+ rubinetteria:["rubinett","cromature","cromo","miscelator"],"box doccia":["doccia"],piastrelle:["piastrelle","mattonelle"]
+};
+function aDetectSurf(q){var r=[];for(var c in A_SURF){if(A_SURF[c].some(function(t){return aWordIn(q,t);}))r.push(c);}return r;}
+var A_SOIL={
+ degrease:["grasso","grassi","unto","unti","sgrass","olio","oli","carbonizz","bruciat","fuliggine","morchia"],
+ descale:["calcare","incrostazion","deposit","durezza","ruggine","cementizi"],
+ ink:["inchiostr","pennarell","evidenziator","timbr","adesiv","colla","biro"],
+ laundry:["bucato","biancheria","tessut","capi","macchia","sangue","vino","caffè","sudore","colletti","polsini"],
+ disinfect:["disinfett","disinfezione","igienizz","sanific","batter","virus","germi","microb","patogen","muffa"],
+ protect:["lucid","proteg","cera","autolucid","film protettivo"],
+ deodor:["odor","deodor","profum","maleodor"],
+ glass:["vetr","specchi","pulivetr"],
+ wood:["antistatic","mobili","arred"]
+};
+function aDetectSoil(q){var r=[];for(var t in A_SOIL){if(A_SOIL[t].some(function(w){return q.indexOf(w)>=0;}))r.push(t);}return r;}
+var A_ENV={
+ food:{kw:["cucina","cucine","foodservice","ristorant","pizzeri","bar","mensa","mense","catering","gastronomia","pasticceri","alimentar","haccp"],cat:"food"},
+ bath:{kw:["bagno","bagni","sanitari","doccia","wc","servizi igienic","spogliatoi"],cat:"bath"},
+ floor:{kw:["pavimento","pavimenti","pavimentazione"],cat:"floor"},
+ ind:{kw:["officina","officine","industria","industriale","capannone","magazzino","metalmeccanic","autorimessa"],cat:"ind"},
+ laun:{kw:["lavanderi","stireria","bucato"],cat:"laun"},
+ dis:{kw:["scuola","scuole","ospedal","ambulatori","palestr","piscina","ufficio","uffici","hotel","albergo","reception"],cat:null}
+};
+function aDetectEnv(q){var cat=null,food=false,floor=false;for(var e in A_ENV){if(A_ENV[e].kw.some(function(w){return q.indexOf(w)>=0;})){if(e==="food")food=true;if(A_ENV[e].cat){if(e==="floor")floor=true;else if(!cat)cat=A_ENV[e].cat;}}}if(!cat&&floor)cat="floor";return {cat:cat,food:food};}
+var A_ABB={mastermatic:["brilux","decrost"],brilux:["mastermatic","decrost"],decrost:["mastermatic","brilux"],
+ desan:["presto","superaction"],presto:["desan","superaction"],superaction:["desan","presto"],
+ ekosan:["aersan"],aersan:["ekosan"],grill:["fatpul"],fatpul:["grill"],batsan:["limelock"],limelock:["batsan"],
+ boxi:["xpluri","plurel","pavixan"],alcovir:["igiesanrtu","soquat"],igiesanrtu:["alcovir","soquat"],
+ soquat:["alcovir","igiesanrtu"],netplus:["ultranet"],ultranet:["netplus"]};
+function aDetectProducts(q){return Object.keys(P).filter(function(k){var n=aNorm(P[k].n);if(n.indexOf(" ")>=0)return q.indexOf(n)>=0;return aTok(q).indexOf(n)>=0;});}
+function apill(k){return '<b class="apk" onclick="go(\'cerca\')">'+P[k].n+"</b>";}
+function aUse(k){return APP[k]||P[k].how;}
+function aOneLine(s){s=s||"";var m=s.split(/[:.]/);return (m[0]||s).trim();}
+function aEnvName(c){return {food:"cucina/foodservice",bath:"bagno",floor:"pavimenti",ind:"industriale",dis:"igiene ambientale",laun:"lavanderia",oxy:"OxyCare"}[c]||c;}
+function aSystem(cat){var map={food:["mastermatic","brilux","decrost","netplus","ultranet","igiesanrtu"],bath:["batsan","limelock","boxi","igiesanrtu"],floor:["ekosan","pavilux","sanson","splende"],ind:["greenenergy","redenergy","ergonet","viaol"],laun:["presto","desan","superaction"],dis:["igiesanrtu","alcovir","soquat"],oxy:["boxi","xpluri","plurel","pavixan"]};return map[cat]||[];}
+function aSoilScore(k,tag){var ph=phClass(P[k].ph),cat=P[k].cat,reg=!!P[k].reg,soil=aNorm(SFC[k].soil);
+ if(tag==="degrease")return (ph==="alk"?4:0)+(soil.indexOf("grass")>=0?2:0);
+ if(tag==="descale")return (ph==="acid"?4:0)+(soil.indexOf("calcare")>=0?2:0);
+ if(tag==="disinfect")return reg?5:(cat==="oxy"?1:0);
+ if(tag==="ink")return k==="deink"?6:0;
+ if(tag==="laundry")return cat==="laun"?5:0;
+ if(tag==="protect")return k==="splende"?6:0;
+ if(tag==="deodor")return k==="aersan"?6:0;
+ if(tag==="glass")return (["detersolvs","duflash","plurel"].indexOf(k)>=0)?5:0;
+ if(tag==="wood")return k==="tekok"?5:0;return 0;}
+function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);
+ var sc=Object.keys(P).map(function(k){var s=0,ex=false;var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
+  surf.forEach(function(su){var iOk=A_SURF[su].some(function(t){return aWordIn(ok,t);}),iNo=A_SURF[su].some(function(t){return aWordIn(no,t);});if(iNo&&!iOk)ex=true;else if(iOk)s+=8;});
+  soil.forEach(function(t){s+=aSoilScore(k,t);});
+  if(env.cat&&P[k].cat===env.cat)s+=2;
+  if(env.food&&(P[k].cat==="food"||P[k].cat==="oxy"||P[k].reg))s+=1;
+  return {k:k,s:s,ex:ex};}).filter(function(x){return !x.ex&&x.s>0;}).sort(function(a,b){return b.s-a.s;});
+ return {list:sc,surf:surf,soil:soil,env:env};}
+function assistAnswer(qraw){var q=aNorm(qraw);
+ if(q.trim().length<2)return "Scrivimi cosa ti serve: una superficie, un tipo di sporco o un ambiente (es. “sgrassante per cucina”, “anticalcare box doccia”, “posso usare Decrost sul marmo?”).";
+ var prods=aDetectProducts(q),surf=aDetectSurf(q);
+ /* 1) COMPATIBILITÀ */
+ if(prods.length&&surf.length&&(aHas(q,["posso","va bene","compatibil","si pu","è adatto","adatto","danneggia","rovina","evit","uso su","usarlo su","usare su"]))){
+  var k=prods[0],su=surf[0],ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
+  var on=A_SURF[su].some(function(t){return aWordIn(ok,t);}),off=A_SURF[su].some(function(t){return aWordIn(no,t);});
+  if(off){var alt=aRecommend(su).list.filter(function(x){return x.k!==k;});
+   return "⚠ Meglio di no: "+apill(k)+" non è indicato su <b>"+su+"</b>. "+SFC[k].no+"."+(alt.length?" Su "+su+" usa piuttosto "+apill(alt[0].k)+(alt[1]?" o "+apill(alt[1].k):"")+".":"");}
+  if(on)return "✔ Sì, "+apill(k)+" è indicato su <b>"+su+"</b>. Modo d’uso: "+aUse(k)+"."+(P[k].warn?" ⚠ "+P[k].warn:"");
+  return "<b>"+su+"</b> non è tra le superfici specifiche di "+apill(k)+", pensato per: "+SFC[k].ok+".";}
+ /* 2) COME SI USA / DILUIZIONE */
+ if(prods.length&&aHas(q,["come","diluis","dosagg","quanto","applic","usare","utilizz","risciacqu","metod","concentr","dose"])){
+  var k2=prods[0];return apill(k2)+" — "+P[k2].how+"<br><b>Modo d’uso:</b> "+aUse(k2)+". <b>Formati:</b> "+P[k2].fmt+"."+(P[k2].warn?" ⚠ "+P[k2].warn:"");}
+ /* 3) SISTEMA / ABBINATA */
+ if(aHas(q,["completa","completo","kit","sistema","gamma per","tutto per","cosa serve per","pacchetto","abbin","insieme"])){
+  if(prods.length&&A_ABB[prods[0]]){var k3=prods[0];return "Con "+apill(k3)+" abbina: "+A_ABB[k3].map(apill).join(", ")+". Insieme coprono il ciclo completo e alzano lo scontrino.";}
+  var env=aDetectEnv(q);
+  if(env.cat){return "Per <b>"+aEnvName(env.cat)+"</b> il sistema consigliato: "+aSystem(env.cat).map(apill).join(", ")+".";}
+  return "Dimmi l’ambiente (cucina, bagno, pavimenti, lavanderia, industriale, disinfezione) o un prodotto, e ti compongo il pacchetto.";}
+ /* 4) RACCOMANDAZIONE */
+ var r=aRecommend(q);
+ if(!r.list.length)return "Non ho abbastanza elementi. Prova a indicare una <b>superficie</b> (gres, marmo, acciaio…) o un <b>tipo di sporco</b> (grasso, calcare, inchiostro…) e l’ambiente.";
+ var top=r.list.slice(0,2);
+ var out="Ti consiglio "+apill(top[0].k)+" — "+aOneLine(P[top[0].k].sell)+".<br><b>Modo d’uso:</b> "+aUse(top[0].k)+".";
+ if(P[top[0].k].warn)out+=" ⚠ "+P[top[0].k].warn;
+ if(top[1])out+="<br><b>In alternativa:</b> "+apill(top[1].k)+" ("+aOneLine(P[top[1].k].sell)+").";
+ if(A_ABB[top[0].k])out+="<br>💡 Spesso abbinato a: "+A_ABB[top[0].k].map(apill).join(", ")+".";
+ return out;}
+/* ---- UI chat ---- */
+var aConv=[];
+function page_assist(){
+ if(!aConv.length)aConv.push({r:"a",t:"Ciao! Sono l’assistente prodotti Sochil. Chiedimi quale prodotto usare, come si applica, se è compatibile con una superficie o cosa serve per un ambiente. Rispondo solo con i prodotti in piattaforma."});
+ var ex=["Sgrassante per cucina foodservice","Anticalcare per box doccia","Posso usare Decrost sul marmo?","Come diluisco Green Energy?","Cosa serve per una cucina completa?","Prodotto per pavimento in gres di un capannone"];
+ var chips=ex.map(function(x){return '<span class="fchip achip" onclick="aChip(this)">'+x+"</span>";}).join("");
+ return '<button class="back" onclick="go(\'home\')">← Home</button><h2 class="pg">Assistente prodotti</h2>'
+  +'<p class="lead">Fai una domanda in linguaggio naturale: quale prodotto, come si usa, se è compatibile, o cosa serve per un ambiente.</p>'
+  +'<div class="filters">'+chips+'</div>'
+  +'<div id="aconv" class="aconv"></div>'
+  +'<div class="arow"><input id="ainput" class="search-in" placeholder="Scrivi qui la tua domanda…" onkeydown="if(event.key===\'Enter\')aSend()"><button class="btn pri" onclick="aSend()">Chiedi</button></div>'
+  +'<p class="note" style="margin-top:8px">Strumento di supporto: verifica sempre etichetta CLP e SDS del prodotto prima dell’uso.</p>';
+}
+function aRender(){var el=document.getElementById("aconv");if(!el)return;el.innerHTML=aConv.map(function(m){return '<div class="abub '+m.r+'">'+m.t+"</div>";}).join("");el.scrollTop=el.scrollHeight;}
+function aSend(){var inp=document.getElementById("ainput");if(!inp)return;var q=inp.value.trim();if(!q)return;inp.value="";aAsk(q);}
+function aChip(el){aAsk(el.textContent);}
+function aAsk(q){aConv.push({r:"u",t:q});aConv.push({r:"a",t:assistAnswer(q)});aRender();}
+
 let current="home";
 function go(id){current=id;const m=MODULES.find(x=>x.id===id);let html='';
  if(id==='home')html=page_home();
  else if(id==='fond')html=page_fond();
  else if(id==='cerca')html=page_cerca();
+ else if(id==='assist')html=page_assist();
  else if(m&&m.cat)html=page_fam(m);
  const main=document.getElementById('main');main.innerHTML=html;
- if(id!=='home'&&id!=='cerca'){const i=NAVSEQ.indexOf(id);const pid=i>0?NAVSEQ[i-1]:null,nid=i>=0&&i<NAVSEQ.length-1?NAVSEQ[i+1]:null;
+ if(id==='assist')aRender();
+ if(id!=='home'&&id!=='cerca'&&id!=='assist'){const i=NAVSEQ.indexOf(id);const pid=i>0?NAVSEQ[i-1]:null,nid=i>=0&&i<NAVSEQ.length-1?NAVSEQ[i+1]:null;
   const lab=x=>MODULES.find(m=>m.id===x).t;
   main.insertAdjacentHTML('beforeend',`<div class="modnav"><button ${pid?'':'disabled'} ${pid?`onclick="go('${pid}')"`:''}><span class="s">← Precedente</span>${pid?lab(pid):'—'}</button><button class="nx" ${nid?'':'disabled'} ${nid?`onclick="go('${nid}')"`:''}><span class="s">Successivo →</span>${nid?lab(nid):'—'}</button></div>`);}
  window.scrollTo(0,0);}
