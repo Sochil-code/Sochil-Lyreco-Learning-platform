@@ -625,7 +625,7 @@ function aEnvName(c){return {food:"cucina/foodservice",bath:"bagno",floor:"pavim
 function aSystem(cat){var map={food:["mastermatic","brilux","decrost","netplus","ultranet","igiesanrtu"],bath:["batsan","limelock","boxi","igiesanrtu"],floor:["ekosan","pavilux","sanson","splende"],ind:["greenenergy","redenergy","ergonet","viaol"],laun:["presto","desan","superaction"],dis:["igiesanrtu","alcovir","soquat"],oxy:["boxi","xpluri","plurel","pavixan"]};return map[cat]||[];}
 function aSoilScore(k,tag){var ph=phClass(P[k].ph),cat=P[k].cat,reg=!!P[k].reg,soil=aNorm(SFC[k].soil);
  if(tag==="degrease")return (ph==="alk"?4:0)+(soil.indexOf("grass")>=0?2:0);
- if(tag==="descale")return (ph==="acid"?4:0)+(soil.indexOf("calcare")>=0?2:0);
+ if(tag==="descale"){var sb=aNorm(P[k].s);return (/anticalcare|disincrostante/.test(sb)?7:(ph==="acid"?1:0))+(soil.indexOf("calcare")>=0?1:0);}
  if(tag==="disinfect")return reg?5:(cat==="oxy"?1:0);
  if(tag==="ink")return k==="deink"?6:0;
  if(tag==="laundry")return cat==="laun"?5:0;
@@ -633,12 +633,21 @@ function aSoilScore(k,tag){var ph=phClass(P[k].ph),cat=P[k].cat,reg=!!P[k].reg,s
  if(tag==="deodor")return k==="aersan"?6:0;
  if(tag==="glass")return (["detersolvs","duflash","plurel"].indexOf(k)>=0)?5:0;
  if(tag==="wood")return k==="tekok"?5:0;return 0;}
-function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);
+function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);var qk=aHas(q,["rapido","veloce","quotidian","pronto","senza risciacquo","al volo","tutti i giorni","leggero","manutenzione","pulitore","pulire","detergente","multiuso","tuttofare"]);var hv=aHas(q,["pesante","ostinat","difficile","incrostat","forte","concentrato","bruciat","carbonizzat","tenace","di punta"]);
  var sc=Object.keys(P).map(function(k){var s=0,ex=false;var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
   surf.forEach(function(su){var iOk=A_SURF[su].some(function(t){return aWordIn(ok,t);}),iNo=A_SURF[su].some(function(t){return aWordIn(no,t);});if(iNo&&!iOk)ex=true;else if(iOk)s+=8;});
   soil.forEach(function(t){s+=aSoilScore(k,t);});
   if(env.cat&&P[k].cat===env.cat)s+=2;
   if(env.food&&(P[k].cat==="food"||P[k].cat==="oxy"||P[k].reg))s+=1;
+  var how=aNorm(P[k].how),sup=aNorm((P[k].sell||"")+" "+(P[k].use||"")),wa=aNorm(P[k].warn||""),phv=P[k].ph,pc=phClass(phv);
+  var ready=/pronto all.uso|tal quale/.test(how);
+  var norinse=/non necessita.{0,20}risciacqu|senza risciacquo|non risciacqua/.test(how);
+  var needsr=/risciacqu/.test(how)&&!norinse;
+  var aggr=(pc==="acid"&&phv<=1)||(pc==="alk"&&phv>=13)||/dpi/.test(wa);
+  var light=/quotidian|alta rotazione|tuttofare|manutenzione|di tutti i giorni/.test(sup)||ready;
+  var heavy=/ostinat|pesante|difficile|carbonizzat|bruciat|incrostazion|tenace|di punta/.test(sup);
+  if(qk){if(ready)s+=2;if(norinse)s+=2;if(light)s+=1;if(aggr)s-=5;if(needsr)s-=2;}
+  if(hv){if(aggr||heavy)s+=4;}
   return {k:k,s:s,ex:ex};}).filter(function(x){return !x.ex&&x.s>0;}).sort(function(a,b){return b.s-a.s;});
  return {list:sc,surf:surf,soil:soil,env:env};}
 function assistAnswer(qraw){var q=aNorm(qraw);
@@ -663,7 +672,7 @@ function assistAnswer(qraw){var q=aNorm(qraw);
   return "Dimmi l’ambiente (cucina, bagno, pavimenti, lavanderia, industriale, disinfezione) o un prodotto, e ti compongo il pacchetto.";}
  /* 4) RACCOMANDAZIONE */
  var r=aRecommend(q);
- if(!r.list.length)return "Non ho abbastanza elementi. Prova a indicare una <b>superficie</b> (gres, marmo, acciaio…) o un <b>tipo di sporco</b> (grasso, calcare, inchiostro…) e l’ambiente.";
+ if(!r.list.length){if(prods.length){var kp=prods[0];return apill(kp)+" — "+aOneLine(P[kp].sell)+". <b>Adatto a:</b> "+SFC[kp].ok+". <b>Modo d’uso:</b> "+aUse(kp)+"."+(P[kp].warn?" ⚠ "+P[kp].warn:"");}return "Non ho abbastanza elementi. Prova a indicare una <b>superficie</b> (gres, marmo, acciaio…) o un <b>tipo di sporco</b> (grasso, calcare, inchiostro…) e l’ambiente.";}
  var top=r.list.slice(0,2);
  var out="Ti consiglio "+apill(top[0].k)+" — "+aOneLine(P[top[0].k].sell)+".<br><b>Modo d’uso:</b> "+aUse(top[0].k)+".";
  if(P[top[0].k].warn)out+=" ⚠ "+P[top[0].k].warn;
