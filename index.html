@@ -494,7 +494,7 @@ function pcardHTML(k){const p=P[k];
  const s=(p.n+' '+p.s+' '+cli+' '+(CATS[p.cat]?CATS[p.cat].name:'')+' '+(APP[k]||'')+' '+(SFC[k]?SFC[k].ok+' '+SFC[k].soil:'')).toLowerCase().replace(/"/g,'');
  const dt=[`<span><b>Aspetto:</b> ${p.asp}</span>`,`<span><b>pH:</b> ${phLabel(p.ph)}</span>`,p.dens?`<span><b>Densità:</b> ${p.dens}</span>`:'',p.bio?`<span><b>Biodegr.:</b> ${p.bio}</span>`:'',`<span><b>Validità:</b> ${p.val}</span>`,`<span><b>Formati:</b> ${p.fmt}</span>`].join('');
  return `<div class="pcard" data-s="${s}" data-cat="${p.cat}" data-ph="${phClass(p.ph)}" data-reg="${p.reg?'pmc':''}">
-  <div class="pc-h"><div class="pthumb"><img src="img/${k}.jpg" alt="${p.n}" loading="lazy" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${k}.jpg'}else{this.remove()}"></div><div><div class="nm">${p.n}</div><div class="sb">${p.s}</div></div><span class="ph ${phClass(p.ph)}">${phLabel(p.ph)}</span></div>
+  <div class="pc-h"><div class="pthumb"><img src="${k}.jpg" alt="${p.n}" loading="lazy" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='img/${k}.jpg'}else{this.remove()}"></div><div><div class="nm">${p.n}</div><div class="sb">${p.s}</div></div><span class="ph ${phClass(p.ph)}">${phLabel(p.ph)}</span></div>
   <div class="pc-b">
    <div class="appline"><b>Modo d'uso:</b> ${APP[k]||p.how}</div>
    ${SFC[k]?`<div class="kv sfc"><b>Superfici consigliate:</b> ${SFC[k].ok}</div><div class="kv rem"><b>Rimuove:</b> ${SFC[k].soil}</div>`:''}
@@ -502,7 +502,7 @@ function pcardHTML(k){const p=P[k];
    <div class="sell"><b>Perché si vende.</b> ${p.sell}</div>
    ${SFC[k]&&SFC[k].no?`<div class="warn"><b>Non usare su.</b> ${SFC[k].no}</div>`:''}
    ${p.warn?`<div class="warn"><b>Attenzione.</b> ${p.warn}</div>`:''}
-   <details class="more"><summary>Dettagli e uso</summary><img class="pbig" src="img/${k}.jpg" alt="${p.n}" loading="lazy" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${k}.jpg'}else{this.remove()}">
+   <details class="more"><summary>Dettagli e uso</summary><img class="pbig" src="${k}.jpg" alt="${p.n}" loading="lazy" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='img/${k}.jpg'}else{this.remove()}">
     <div class="kv" style="margin-top:8px"><b>Dove/uso:</b> ${p.use}</div>
     <div class="kv"><b>Come si usa:</b> ${p.how}</div>
     <div class="kv"><b>Composizione:</b> ${p.comp}</div>
