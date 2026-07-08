@@ -541,10 +541,8 @@ function applyFilters(){const inp=document.getElementById('gsearch');const q=(in
 function page_home(){
  let cards=`<div class="mcard fond" onclick="go('fond')"><div class="ic">${ICONS.fond}</div><div class="mt">Fondamentali</div><div class="mm">Chimica + metodo, in pillole</div></div>`;
  MODULES.filter(m=>m.cat).forEach(m=>{cards+=`<div class="mcard" onclick="go('${m.id}')"><div class="ic">${ICONS[m.id]||m.ic}</div><div class="mt">${m.t}</div><div class="mm">${prodsOf(m.cat).length} prodotti</div></div>`;});
- cards+=`<div class="mcard assist" onclick="go('assist')"><div class="ic"><svg viewBox='0 0 24 24' fill='none' stroke='#1F4E96' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M21 12a8 8 0 0 1-11.5 7.2L4 20l.9-4.4A8 8 0 1 1 21 12Z'/><path d='M8.5 11h7M8.5 14h4'/></svg></div><div class="mt">Assistente</div><div class="mm">Chiedi e ricevi il consiglio</div></div>`;
- cards+=`<div class="mcard search" onclick="go('cerca')"><div class="ic">${ICONS.cerca}</div><div class="mt">Cerca prodotto</div><div class="mm">Trova al volo tra i 34</div></div>`;
  return `<div class="home-hero"><h1>Conosci la gamma Sochil, vendi con competenza.</h1>
-  <div class="cta"><button class="btn pri" onclick="go('fond')">Vai ai Fondamentali</button><button class="btn ghost" onclick="go('cerca')">Cerca un prodotto</button></div></div>
+  <div class="cta"><button class="btn pri" onclick="go('cerca')">Cerca prodotto</button><button class="btn ghost" onclick="go('assist')">Assistente</button></div></div>
   <div class="sec-t">La gamma per famiglia</div>
   <div class="mgrid">${cards}</div>`;
 }
