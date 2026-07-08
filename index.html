@@ -642,7 +642,7 @@ var A_NOAVAIL=["a vapore","vaporella","lucidatrice","monospazzola","a ultrasuoni
 function aDetectProducts(q){var qc=(" "+q+" ").replace(/[\/._-]+/g," ");var toks=aTok(qc);return Object.keys(P).filter(function(k){var n=aNorm(P[k].n);if(qc.indexOf(" "+n+" ")>=0)return true;var w=n.replace(/[^0-9a-zàèéìòù ]/g," ").split(/\s+/).filter(Boolean);if(w[0]&&w[0].length>4&&toks.indexOf(w[0])>=0)return true;if(n.length>4&&toks.indexOf(n)>=0)return true;return false;});}
 
 function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);var qk=aHas(q,["rapido","veloce","quotidian","pronto","senza risciacquo","al volo","tutti i giorni","leggero","manutenzione","pulitore","pulire","detergente","multiuso","tuttofare"]);var hv=aHas(q,["pesante","ostinat","difficile","incrostat","forte","concentrato","bruciat","carbonizzat","tenace","di punta"]);
- var sc=Object.keys(P).map(function(k){var s=0,ex=false;var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
+ var sc=Object.keys(P).map(function(k){var s=0,ex=false;if(P[k].cat==="laun")return {k:k,s:0,ex:true};var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
   surf.forEach(function(su){var iOk=A_SURF[su].some(function(t){return aWordIn(ok,t);}),iNo=A_SURF[su].some(function(t){return aWordIn(no,t);});if(iNo&&!iOk)ex=true;else if(iOk)s+=8;});
   soil.forEach(function(t){s+=aSoilScore(k,t);});
   if(env.cat&&P[k].cat===env.cat)s+=2;
@@ -658,9 +658,27 @@ function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEn
   if(hv){if(aggr||heavy)s+=4;}
   if(!ex){s+=aFullText(q,k);for(var cw in A_CONCEPT){if(q.indexOf(cw)>=0&&A_CONCEPT[cw].indexOf(k)>=0)s+=6;}}return {k:k,s:s,ex:ex};}).filter(function(x){return !x.ex&&x.s>0;}).sort(function(a,b){return b.s-a.s;});
  return {list:sc,surf:surf,soil:soil,env:env};}
+/* ==== dominio tessuto vs superficie (lo sporco è universale) ==== */
+var STAIN_AMBIG=["macchia","macchie","vino","caffè","caffe","sugo","erba","sangue","sudore","cioccolato","smacchi"];
+var A_TEXT_STRONG=["tessut","biancheria","bucato","lavatrice","tovagli","lenzuol","asciugaman","camic","colletti","polsini","moquette","tappeti","abbigliament","vestiti","stoffa","federe","coperte","materasso","capi"];
+var A_TEXT_WORD=["lino","lana","seta","cotone","tende","tenda"];
+var aPending="";
+function aTextile(q){if(A_TEXT_STRONG.some(function(w){return q.indexOf(w)>=0;}))return true;var toks=aTok(q);return A_TEXT_WORD.some(function(w){return toks.indexOf(w)>=0;});}
+function assistTextile(q){
+ var toks=aTok(q);
+ if(toks.indexOf("seta")>=0||toks.indexOf("lana")>=0)return "Su <b>seta e lana</b> attenzione: NON usare il pretrattante "+apill('presto')+" (gli enzimi proteasi aggrediscono le fibre proteiche). Lava con delicatezza con "+apill('desan')+"; per uno sbianco delicato "+apill('superaction')+" (ossigeno attivo, senza cloro).";
+ if(aHas(q,["macchia","macchie","vino","caffè","caffe","sugo","erba","sangue","sudore","colletti","polsini","cioccolato","pretratt","smacchi","frutta","unto"]))
+  return "Per le macchie sui tessuti: pretratta con "+apill('presto')+" (enzimi mirati su sugo, erba, caffè, vino, unto di colletti e polsini), poi lava con "+apill('desan')+". Per ravvivare il bianco aggiungi "+apill('superaction')+". ⚠ "+apill('presto')+" non va su seta e lana.";
+ if(aHas(q,["bianc","ingiallit","sbianc","candeggi","ravviv"]))
+  return "Per ravvivare il bianco senza cloro: "+apill('superaction')+" (ossigeno attivo), in abbinata al detersivo "+apill('desan')+".";
+ return "Per il bucato professionale il sistema è: "+apill('desan')+" (detersivo completo), "+apill('presto')+" (pretrattante macchie) e "+apill('superaction')+" (sbiancante all'ossigeno). ⚠ "+apill('presto')+" non va su seta e lana.";
+}
+
 function assistAnswer(qraw){var q=aNorm(qraw);
  if(q.trim().length<2)return "Scrivimi cosa ti serve: una superficie, un tipo di sporco o un ambiente (es. “sgrassante per cucina”, “anticalcare box doccia”, “posso usare Decrost sul marmo?”).";
  var prods=aDetectProducts(q),surf=aDetectSurf(q);
+ var wasPend=false;
+ if(aPending){var pend=aPending;aPending="";q=pend+" "+q;surf=aDetectSurf(q);prods=aDetectProducts(q);wasPend=true;}
  /* 1) COMPATIBILITÀ */
  if(prods.length&&surf.length&&(aHas(q,["posso","va bene","compatibil","si pu","è adatto","adatto","danneggia","rovina","evit","uso su","usarlo su","usare su"]))){
   var k=prods[0],su=surf[0],ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
@@ -679,6 +697,8 @@ function assistAnswer(qraw){var q=aNorm(qraw);
   if(env.cat){return "Per <b>"+aEnvName(env.cat)+"</b> il sistema consigliato: "+aSystem(env.cat).map(apill).join(", ")+".";}
   return "Dimmi l’ambiente (cucina, bagno, pavimenti, lavanderia, industriale, disinfezione) o un prodotto, e ti compongo il pacchetto.";}
  /* 4) RACCOMANDAZIONE */
+ if(aTextile(q))return assistTextile(q);
+ if(!wasPend&&!surf.length&&aDetectEnv(q).cat===null&&!prods.length&&STAIN_AMBIG.some(function(w){return q.indexOf(w)>=0;})){aPending=q;return "Una precisazione per darti il prodotto giusto: si tratta di un <b>tessuto/biancheria</b> (tovaglie, capi, lenzuola…) o di una <b>superficie lavabile</b> (pavimento, piano, sanitari…)? Dimmi quale.";}
  var r=aRecommend(q);
  if(!r.list.length){if(prods.length){var kp=prods[0];return apill(kp)+" — "+aOneLine(P[kp].sell)+". <b>Adatto a:</b> "+SFC[kp].ok+". <b>Modo d’uso:</b> "+aUse(kp)+"."+(P[kp].warn?" ⚠ "+P[kp].warn:"");}return "Non ho abbastanza elementi. Prova a indicare una <b>superficie</b> (gres, marmo, acciaio…) o un <b>tipo di sporco</b> (grasso, calcare, inchiostro…) e l’ambiente.";}
  var top=r.list.slice(0,2);var na="";for(var zi=0;zi<A_NOAVAIL.length;zi++){if(q.indexOf(A_NOAVAIL[zi])>=0){na="⚠ In gamma non c’è un prodotto specifico per «"+A_NOAVAIL[zi]+"». ";break;}}
