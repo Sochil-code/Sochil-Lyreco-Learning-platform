@@ -714,6 +714,10 @@ function aWhy(k){var p=P[k];var base;if(p.reg)base="e un PMC: disinfetta sul ser
 function aTipShort(k){return "Uso: "+aUse(k)+(P[k].warn?" ⚠ "+P[k].warn:"");}
 function aHowAnswer(k){return apill(k)+" — 🧪 "+P[k].how+"<br><b>Modo d’uso:</b> "+aUse(k)+". <b>Formati:</b> "+P[k].fmt+"."+(P[k].warn?" ⚠ "+P[k].warn:"");}
 
+/* whitelist HACCP: pavimenti food e superfici a contatto alimenti */
+var FOODFLOOR={ultranet:1,ergonet:1,pavixan:1};
+var FOODSURF={netplus:1,xpluri:1,igiesanrtu:1,alcovir:1,deterjet:1};
+function aIsFood(q){return aDetectEnv(q).food||aHas(q,["haccp","alimentar","contatto aliment","food","a contatto con alimenti"]);}
 /* ============ DESTINAZIONE D'USO / AMBITI (esclusione rigida) ============ */
 var A_AMB={
  pavilux:["pav"],ekosan:["pav"],sanson:["pav"],splende:["pav"],soquat:["pav","bagno"],pavixan:["pav"],
@@ -736,7 +740,7 @@ function aDetectAmb(q,surf){
  if(aHas(q,["pavimento","pavimenti","a terra","calpestabile","pavimentazione","pavimentazioni"]))return "pav";
  if(aHas(q,["tessuto","tessuti","biancheria","bucato","capi","tovaglia","tovaglie","lenzuola","moquette","tappeti"]))return "tessuti";
  var i;for(i=0;i<surf.length;i++){if(SURFAMB[surf[i]])return SURFAMB[surf[i]];}
- for(i=0;i<surf.length;i++){if(AMB_ASK[surf[i]])return "ASK";}
+ for(i=0;i<surf.length;i++){if(AMB_ASK[surf[i]])return aIsFood(q)?"sup":"ASK";}
  return "";
 }
 function aAmbOk(k,amb){return (!amb||amb==="ASK")?true:(A_AMB[k]&&A_AMB[k].indexOf(amb)>=0);}
@@ -788,7 +792,7 @@ var A_ROLE={
 function aRoleOf(k){for(var r in A_ROLE){if(A_ROLE[r].indexOf(k)>=0)return r;}return "maint";}
 function aSurfaceAnswer(q,surf){
  var EXCL={desan:1,presto:1,superaction:1,aersan:1,mastermatic:1,brilux:1,splende:1};
- var _amb=aDetectAmb(q,surf);var qual=Object.keys(P).filter(function(k){if(EXCL[k]||P[k].cat==="laun")return false;if(!aAmbOk(k,_amb))return false;
+ var _amb=aDetectAmb(q,surf);var _food=aIsFood(q);var qual=Object.keys(P).filter(function(k){if(EXCL[k]||P[k].cat==="laun")return false;if(_amb==="pav"&&_food){if(!FOODFLOOR[k])return false;}else if(_amb==="sup"&&_food){if(!FOODSURF[k])return false;}else if(!aAmbOk(k,_amb))return false;
    var okAny=false,noAny=false;
    surf.forEach(function(su){var r=aQualSurf(k,su);if(r==="ok")okAny=true;if(r==="no")noAny=true;});
    return okAny&&!noAny;});
@@ -807,9 +811,9 @@ function aSurfaceAnswer(q,surf){
  out+="<br><span class=\"note\">Dimmi il tipo di sporco (grasso, calcare, unto pesante, deceratura…) e l'ambiente, e ti indico il prodotto migliore.</span>";
  return out;}
 
-function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);var _amb=aDetectAmb(q,surf);var detdis=aHas(q,["deter-disinfett","deterdisinfett","detergente disinfett","deterge e disinfett","pulisce e disinfett","detergente-disinfett","detergente e disinfett"]);var qk=aHas(q,["rapido","veloce","quotidian","pronto","senza risciacquo","al volo","tutti i giorni","leggero","manutenzione","pulitore","pulire","detergente","multiuso","tuttofare"]);var hv=aHas(q,["pesante","ostinat","difficile","incrostat","forte","concentrato","bruciat","carbonizzat","tenace","di punta"]);
+function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);var _amb=aDetectAmb(q,surf);var _food=aIsFood(q);var detdis=aHas(q,["deter-disinfett","deterdisinfett","detergente disinfett","deterge e disinfett","pulisce e disinfett","detergente-disinfett","detergente e disinfett"]);var qk=aHas(q,["rapido","veloce","quotidian","pronto","senza risciacquo","al volo","tutti i giorni","leggero","manutenzione","pulitore","pulire","detergente","multiuso","tuttofare"]);var hv=aHas(q,["pesante","ostinat","difficile","incrostat","forte","concentrato","bruciat","carbonizzat","tenace","di punta"]);
  var sc=Object.keys(P).map(function(k){var s=0,ex=false;if(P[k].cat==="laun")return {k:k,s:0,ex:true};if((k==="mastermatic"||k==="brilux")&&surf.length)return {k:k,s:0,ex:true};var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
-  surf.forEach(function(su){var qs=aQualSurf(k,su);if(qs==="no")ex=true;else if(qs==="ok")s+=8;});if(!aAmbOk(k,_amb))ex=true;
+  surf.forEach(function(su){var qs=aQualSurf(k,su);if(qs==="no")ex=true;else if(qs==="ok")s+=8;});if(_amb==="pav"&&_food){if(!FOODFLOOR[k])ex=true;}else if(_amb==="sup"&&_food){if(!FOODSURF[k])ex=true;}else if(!aAmbOk(k,_amb))ex=true;
   soil.forEach(function(t){s+=aSoilScore(k,t);});
   if(env.cat&&P[k].cat===env.cat)s+=2;
   if(env.food&&(P[k].cat==="food"||P[k].cat==="oxy"||P[k].reg))s+=1;
