@@ -645,9 +645,51 @@ function aDetectProducts(q){var qc=(" "+q+" ").replace(/[\/._-]+/g," ");var toks
 var A_DETDIS={};Object.keys(P).forEach(function(k){A_DETDIS[k]=!!P[k].reg && /deterg|deterge|detersione|pulisce/.test(aNorm((P[k].s||"")+" "+(P[k].use||"")+" "+(P[k].sell||"")));});
 var A_CLEAN=["camera bianca","camere bianche","cleanroom","clean room","contaminazione controllata","sala bianca","sale bianche","gmp","sala operatoria","reparto sterile","area sterile","asettic","classificat","iso 5","iso 7"];
 
+/* === super-famiglie di superfici (materiali intercambiabili per compatibilità) === */
+var A_SUPER={gres:"cer",klinker:"cer",ceramica:"cer",piastrelle:"cer",pvc:"vin",vinile:"vin",cemento:"cem",resina:"res"};
+var A_SUPERTERMS={
+ cer:["gres","grès","klinker","clinker","porcellanato","ceramic","maiolica","smaltat","piastrell","mattonell","monocottura","bicottura"],
+ vin:["pvc","vinile","vinilic","lvt"],
+ cem:["cemento","calcestruzzo","cementizio","cementizia","massetto","microcemento"],
+ res:["resina","resine","epossidic","poliuretanic","autolivellante"]
+};
+function aSuperTerms(su){var id=A_SUPER[su];return id?A_SUPERTERMS[id]:A_SURF[su];}
+function aQualSurf(k,su){if(!SFC[k])return "";var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);var terms=aSuperTerms(su);
+ var iOk=terms.some(function(t){return aWordIn(ok,t);});
+ var iNo=terms.some(function(t){return aWordIn(no,t);});
+ if(iNo&&!iOk)return "no";
+ if(iOk)return "ok";
+ return "";}
+/* === ruolo d'uso derivato dalla chimica delle formule === */
+var A_ROLE={
+ maint:["pavilux","ekosan","sanson","splende","soquat","tekok","plurel","xpluri","deterjet","detersolvs","duflash"],
+ igien:["alcovir","igiesanrtu","ipogel"],
+ fondo:["grill","fatpul","ultranet","netplus","deink","greenenergy","ergonet","redenergy","viaol"],
+ desc:["decrost","limelock","pavixan","batsan","boxi"]
+};
+function aRoleOf(k){for(var r in A_ROLE){if(A_ROLE[r].indexOf(k)>=0)return r;}return "maint";}
+function aSurfaceAnswer(q,surf){
+ var EXCL={desan:1,presto:1,superaction:1,aersan:1,mastermatic:1,brilux:1};
+ var qual=Object.keys(P).filter(function(k){if(EXCL[k]||P[k].cat==="laun")return false;
+   var okAny=false,noAny=false;
+   surf.forEach(function(su){var r=aQualSurf(k,su);if(r==="ok")okAny=true;if(r==="no")noAny=true;});
+   return okAny&&!noAny;});
+ if(!qual.length)return null;
+ var g={maint:[],igien:[],fondo:[],desc:[]};
+ qual.forEach(function(k){g[aRoleOf(k)].push(k);});
+ function cap(a){return a.slice(0,6);}
+ var suName=surf[0];
+ var out="Su <b>"+suName+"</b> puoi usare diversi prodotti della gamma:";
+ if(g.maint.length)out+="<br>• <b>Manutenzione quotidiana:</b> "+cap(g.maint).map(apill).join(", ");
+ if(g.igien.length)out+="<br>• <b>Igienizzazione / disinfezione:</b> "+cap(g.igien).map(apill).join(", ");
+ if(g.fondo.length)out+="<br>• <b>Sporco di fondo / sgrassaggio pesante:</b> "+cap(g.fondo).map(apill).join(", ");
+ if(g.desc.length)out+="<br>• <b>Anticalcare / incrostazioni:</b> "+cap(g.desc).map(apill).join(", ");
+ out+="<br><span class=\"note\">Dimmi il tipo di sporco (grasso, calcare, unto pesante, deceratura…) e l'ambiente, e ti indico il prodotto migliore.</span>";
+ return out;}
+
 function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);var detdis=aHas(q,["deter-disinfett","deterdisinfett","detergente disinfett","deterge e disinfett","pulisce e disinfett","detergente-disinfett","detergente e disinfett"]);var qk=aHas(q,["rapido","veloce","quotidian","pronto","senza risciacquo","al volo","tutti i giorni","leggero","manutenzione","pulitore","pulire","detergente","multiuso","tuttofare"]);var hv=aHas(q,["pesante","ostinat","difficile","incrostat","forte","concentrato","bruciat","carbonizzat","tenace","di punta"]);
  var sc=Object.keys(P).map(function(k){var s=0,ex=false;if(P[k].cat==="laun")return {k:k,s:0,ex:true};var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
-  surf.forEach(function(su){var iOk=A_SURF[su].some(function(t){return aWordIn(ok,t);}),iNo=A_SURF[su].some(function(t){return aWordIn(no,t);});if(iNo&&!iOk)ex=true;else if(iOk)s+=8;});
+  surf.forEach(function(su){var qs=aQualSurf(k,su);if(qs==="no")ex=true;else if(qs==="ok")s+=8;});
   soil.forEach(function(t){s+=aSoilScore(k,t);});
   if(env.cat&&P[k].cat===env.cat)s+=2;
   if(env.food&&(P[k].cat==="food"||P[k].cat==="oxy"||P[k].reg))s+=1;
@@ -686,7 +728,7 @@ function assistAnswer(qraw){var q=aNorm(qraw);
  /* 1) COMPATIBILITÀ */
  if(prods.length&&surf.length&&(aHas(q,["posso","va bene","compatibil","si pu","è adatto","adatto","danneggia","rovina","evit","uso su","usarlo su","usare su"]))){
   var k=prods[0],su=surf[0],ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
-  var on=A_SURF[su].some(function(t){return aWordIn(ok,t);}),off=A_SURF[su].some(function(t){return aWordIn(no,t);});
+  var _qs=aQualSurf(k,su),on=_qs==="ok",off=_qs==="no";
   if(off){var alt=aRecommend(su).list.filter(function(x){return x.k!==k;});
    return "⚠ Meglio di no: "+apill(k)+" non è indicato su <b>"+su+"</b>. "+SFC[k].no+"."+(alt.length?" Su "+su+" usa piuttosto "+apill(alt[0].k)+(alt[1]?" o "+apill(alt[1].k):"")+".":"");}
   if(on)return "✔ Sì, "+apill(k)+" è indicato su <b>"+su+"</b>. Modo d’uso: "+aUse(k)+"."+(P[k].warn?" ⚠ "+P[k].warn:"");
@@ -702,13 +744,15 @@ function assistAnswer(qraw){var q=aNorm(qraw);
   return "Dimmi l’ambiente (cucina, bagno, pavimenti, lavanderia, industriale, disinfezione) o un prodotto, e ti compongo il pacchetto.";}
  /* 4) RACCOMANDAZIONE */
  if(aTextile(q))return assistTextile(q);
+ var _s0=aDetectSoil(q);if(surf.length&&!prods.length&&_s0.length===0){var _sg=aSurfaceAnswer(q,surf);if(_sg)return _sg;}
  if(!wasPend&&!surf.length&&aDetectEnv(q).cat===null&&!prods.length&&STAIN_AMBIG.some(function(w){return q.indexOf(w)>=0;})){aPending=q;return "Una precisazione per darti il prodotto giusto: si tratta di un <b>tessuto/biancheria</b> (tovaglie, capi, lenzuola…) o di una <b>superficie lavabile</b> (pavimento, piano, sanitari…)? Dimmi quale.";}
  var r=aRecommend(q);
  if(!r.list.length){if(prods.length){var kp=prods[0];return apill(kp)+" — "+aOneLine(P[kp].sell)+". <b>Adatto a:</b> "+SFC[kp].ok+". <b>Modo d’uso:</b> "+aUse(kp)+"."+(P[kp].warn?" ⚠ "+P[kp].warn:"");}return "Non ho abbastanza elementi. Prova a indicare una <b>superficie</b> (gres, marmo, acciaio…) o un <b>tipo di sporco</b> (grasso, calcare, inchiostro…) e l’ambiente.";}
- var top=r.list.slice(0,2);var na="";for(var zi=0;zi<A_NOAVAIL.length;zi++){if(q.indexOf(A_NOAVAIL[zi])>=0){na="⚠ In gamma non c’è un prodotto specifico per «"+A_NOAVAIL[zi]+"». ";break;}}for(var ci=0;ci<A_CLEAN.length;ci++){if(q.indexOf(A_CLEAN[ci])>=0){na=na+"⚠ Le camere bianche / ambienti a contaminazione controllata richiedono disinfettanti validati dedicati: in gamma non c’è un prodotto specifico per questo standard (verifica sempre il tuo protocollo). ";break;}}
+ var top=r.list.slice(0,3);var na="";for(var zi=0;zi<A_NOAVAIL.length;zi++){if(q.indexOf(A_NOAVAIL[zi])>=0){na="⚠ In gamma non c’è un prodotto specifico per «"+A_NOAVAIL[zi]+"». ";break;}}for(var ci=0;ci<A_CLEAN.length;ci++){if(q.indexOf(A_CLEAN[ci])>=0){na=na+"⚠ Le camere bianche / ambienti a contaminazione controllata richiedono disinfettanti validati dedicati: in gamma non c’è un prodotto specifico per questo standard (verifica sempre il tuo protocollo). ";break;}}
  var _dd=aHas(q,["deter-disinfett","deterdisinfett","detergente disinfett","deterge e disinfett","pulisce e disinfett","detergente-disinfett","detergente e disinfett"]);function _desc(k){return (_dd&&A_DETDIS[k])?"deterge e disinfetta in un solo passaggio (PMC)":aOneLine(P[k].sell);} var out=na+"Ti consiglio "+apill(top[0].k)+" — "+_desc(top[0].k)+".<br><b>Modo d’uso:</b> "+aUse(top[0].k)+".";
  if(P[top[0].k].warn)out+=" ⚠ "+P[top[0].k].warn;
  if(top[1])out+="<br><b>In alternativa:</b> "+apill(top[1].k)+" ("+_desc(top[1].k)+").";
+ if(top[2])out+="<br><b>Anche:</b> "+apill(top[2].k)+".";
  if(A_ABB[top[0].k])out+="<br>💡 Spesso abbinato a: "+A_ABB[top[0].k].map(apill).join(", ")+".";
  return out;}
 /* ---- UI chat ---- */
