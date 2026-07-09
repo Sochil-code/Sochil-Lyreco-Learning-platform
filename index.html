@@ -714,6 +714,33 @@ function aWhy(k){var p=P[k];var base;if(p.reg)base="e un PMC: disinfetta sul ser
 function aTipShort(k){return "Uso: "+aUse(k)+(P[k].warn?" ⚠ "+P[k].warn:"");}
 function aHowAnswer(k){return apill(k)+" — 🧪 "+P[k].how+"<br><b>Modo d’uso:</b> "+aUse(k)+". <b>Formati:</b> "+P[k].fmt+"."+(P[k].warn?" ⚠ "+P[k].warn:"");}
 
+/* ============ DESTINAZIONE D'USO / AMBITI (esclusione rigida) ============ */
+var A_AMB={
+ pavilux:["pav"],ekosan:["pav"],sanson:["pav"],splende:["pav"],soquat:["pav","bagno"],pavixan:["pav"],
+ greenenergy:["pav"],ergonet:["pav"],redenergy:["pav"],viaol:["pav","metalli"],
+ netplus:["sup","metalli"],deterjet:["sup","vetri"],plurel:["sup","vetri"],tekok:["sup"],xpluri:["sup"],deink:["sup"],igiesanrtu:["sup"],alcovir:["sup"],
+ grill:["forni"],fatpul:["forni"],ultranet:["forni","sup","metalli"],
+ batsan:["bagno"],boxi:["bagno"],limelock:["bagno"],ipogel:["bagno","sup"],
+ detersolvs:["vetri"],duflash:["vetri"],
+ decrost:["macchine"],mastermatic:["macchine"],brilux:["macchine"],
+ desan:["tessuti"],presto:["tessuti"],superaction:["tessuti"],aersan:["ambiente"]
+};
+var SURFAMB={gres:"pav",klinker:"pav",ceramica:"pav",piastrelle:"pav",marmo:"pav",granito:"pav",travertino:"pav",ardesia:"pav",porfido:"pav",pietra:"pav",cotto:"pav",graniglia:"pav",pvc:"pav",linoleum:"pav",gomma:"pav",cemento:"pav",resina:"pav",parquet:"pav",laminato:"pav",sanitari:"bagno","box doccia":"bagno",rubinetteria:"bagno",vetro:"vetri",specchi:"vetri",rame:"metalli",ottone:"metalli",zinco:"metalli"};
+var AMB_ASK={acciaio:1,"acciaio inox":1,alluminio:1,ferro:1,legno:1};
+function aDetectAmb(q,surf){
+ if(aHas(q,["forno","forni","griglia","griglie","cappa","cappe","friggitrice","friggitrici","piastra di cottura","teglie","attrezzatura di cottura","attrezzature di cottura","forno autopulente"]))return "forni";
+ if(aHas(q,["lavastoviglie","lavabicchieri","lava-stoviglie","interni lavastoviglie","in lavastoviglie"]))return "macchine";
+ if(aHas(q,["piano di lavoro","piani di lavoro","bancone","banconi","ripiano","ripiani","tavolo","tavoli","scrivania","scrivanie","arredi","mobili","cattedra","piano cucina","top cucina"]))return "sup";
+ if(aHas(q,["sanitari","water","wc","turca","turche","orinatoio","orinatoi","bidet","doccia","box doccia","rubinett","lavabo","lavandino"]))return "bagno";
+ if(aHas(q,["vetro","vetri","vetrata","vetrate","vetrina","vetrine","specchio","specchi","cristalli"]))return "vetri";
+ if(aHas(q,["pavimento","pavimenti","a terra","calpestabile","pavimentazione","pavimentazioni"]))return "pav";
+ if(aHas(q,["tessuto","tessuti","biancheria","bucato","capi","tovaglia","tovaglie","lenzuola","moquette","tappeti"]))return "tessuti";
+ var i;for(i=0;i<surf.length;i++){if(SURFAMB[surf[i]])return SURFAMB[surf[i]];}
+ for(i=0;i<surf.length;i++){if(AMB_ASK[surf[i]])return "ASK";}
+ return "";
+}
+function aAmbOk(k,amb){return (!amb||amb==="ASK")?true:(A_AMB[k]&&A_AMB[k].indexOf(amb)>=0);}
+
 /* === LIVELLO OPERAZIONI: liste CHIUSE che sovrascrivono ogni altro match === */
 var A_OP=[
  {n:"la deceratura",lab:"Deceratura (rimozione di cere e film)",test:["decer","deceratura","deceraz","rimuovere la cera","rimozione della cera","togliere la cera","asportare la cera","sverniciatura cera","strippaggio cera","strip della cera","rimozione film"],only:["ergonet","viaol"]},
@@ -761,7 +788,7 @@ var A_ROLE={
 function aRoleOf(k){for(var r in A_ROLE){if(A_ROLE[r].indexOf(k)>=0)return r;}return "maint";}
 function aSurfaceAnswer(q,surf){
  var EXCL={desan:1,presto:1,superaction:1,aersan:1,mastermatic:1,brilux:1,splende:1};
- var qual=Object.keys(P).filter(function(k){if(EXCL[k]||P[k].cat==="laun")return false;
+ var _amb=aDetectAmb(q,surf);var qual=Object.keys(P).filter(function(k){if(EXCL[k]||P[k].cat==="laun")return false;if(!aAmbOk(k,_amb))return false;
    var okAny=false,noAny=false;
    surf.forEach(function(su){var r=aQualSurf(k,su);if(r==="ok")okAny=true;if(r==="no")noAny=true;});
    return okAny&&!noAny;});
@@ -780,9 +807,9 @@ function aSurfaceAnswer(q,surf){
  out+="<br><span class=\"note\">Dimmi il tipo di sporco (grasso, calcare, unto pesante, deceratura…) e l'ambiente, e ti indico il prodotto migliore.</span>";
  return out;}
 
-function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);var detdis=aHas(q,["deter-disinfett","deterdisinfett","detergente disinfett","deterge e disinfett","pulisce e disinfett","detergente-disinfett","detergente e disinfett"]);var qk=aHas(q,["rapido","veloce","quotidian","pronto","senza risciacquo","al volo","tutti i giorni","leggero","manutenzione","pulitore","pulire","detergente","multiuso","tuttofare"]);var hv=aHas(q,["pesante","ostinat","difficile","incrostat","forte","concentrato","bruciat","carbonizzat","tenace","di punta"]);
+function aRecommend(q){var surf=aDetectSurf(q),soil=aDetectSoil(q),env=aDetectEnv(q);var _amb=aDetectAmb(q,surf);var detdis=aHas(q,["deter-disinfett","deterdisinfett","detergente disinfett","deterge e disinfett","pulisce e disinfett","detergente-disinfett","detergente e disinfett"]);var qk=aHas(q,["rapido","veloce","quotidian","pronto","senza risciacquo","al volo","tutti i giorni","leggero","manutenzione","pulitore","pulire","detergente","multiuso","tuttofare"]);var hv=aHas(q,["pesante","ostinat","difficile","incrostat","forte","concentrato","bruciat","carbonizzat","tenace","di punta"]);
  var sc=Object.keys(P).map(function(k){var s=0,ex=false;if(P[k].cat==="laun")return {k:k,s:0,ex:true};if((k==="mastermatic"||k==="brilux")&&surf.length)return {k:k,s:0,ex:true};var ok=aNorm(SFC[k].ok),no=aNorm(SFC[k].no);
-  surf.forEach(function(su){var qs=aQualSurf(k,su);if(qs==="no")ex=true;else if(qs==="ok")s+=8;});
+  surf.forEach(function(su){var qs=aQualSurf(k,su);if(qs==="no")ex=true;else if(qs==="ok")s+=8;});if(!aAmbOk(k,_amb))ex=true;
   soil.forEach(function(t){s+=aSoilScore(k,t);});
   if(env.cat&&P[k].cat===env.cat)s+=2;
   if(env.food&&(P[k].cat==="food"||P[k].cat==="oxy"||P[k].reg))s+=1;
@@ -854,6 +881,7 @@ function assistAnswer(qraw){var q=aNorm(qraw);
  /* 4) RACCOMANDAZIONE */
  if(aTextile(q))return assistTextile(q);
  var _op=aOpAnswer(q,surf);if(_op)return _op;
+ var _ambA=aDetectAmb(q,surf);if(_ambA==="ASK"&&!wasPend&&!prods.length){aPending=q;return "Per darti il prodotto giusto dimmi l'ambito — stessa superficie ma il prodotto cambia: <b>pavimento</b>, <b>piano di lavoro / superficie</b>, <b>attrezzatura di cottura / forno</b>, <b>sanitari</b> o <b>vetri</b>?";}
  var _s0=aDetectSoil(q);if(surf.length&&!prods.length&&_s0.length===0){var _sg=aSurfaceAnswer(q,surf);if(_sg)return _sg;}
  if(!wasPend&&!surf.length&&aDetectEnv(q).cat===null&&!prods.length&&STAIN_AMBIG.some(function(w){return q.indexOf(w)>=0;})){aPending=q;return "Una precisazione per darti il prodotto giusto: si tratta di un <b>tessuto/biancheria</b> (tovaglie, capi, lenzuola…) o di una <b>superficie lavabile</b> (pavimento, piano, sanitari…)? Dimmi quale.";}
  var r=aRecommend(q);
