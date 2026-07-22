@@ -851,7 +851,7 @@ var CT_RTU={alcovir:1,igiesanrtu:1,duflash:1,plurel:1,xpluri:1,boxi:1,aersan:1,d
 var CT_AMBN={pav:"pavimenti",sup:"superfici",forni:"forni/cucina",bagno:"bagno",vetri:"vetri",macchine:"lavastoviglie",tessuti:"tessuti",ambiente:"ambiente",metalli:"metalli/industriale"};
 var CT_FUNC=[
  {k:"decerante",kw:["deceran","decera","rimozione cera","strippaggio"],prods:["ergonet","viaol"]},
- {k:"lavaincera / protettivo",kw:["lavaincera","inceran","autolucidante","film protettiv"],prods:["splende"]},
+ {k:"lavaincera / protettivo",kw:["lavaincera","inceran","autolucidante","film protettiv","cera metallizzata","cera polimerica","emulsione autolucidante","cera per pavimenti","cera paviment"],prods:["splende"]},
  {k:"anticalcare / disincrostante",kw:["anticalcare","disincrost","scioglicalcare","decalcificante"],prods:["decrost","limelock","batsan","boxi","pavixan","xpluri","plurel"]},
  {k:"disinfettante (PMC)",kw:["disinfett","battericid","virucid","fungicid","sanitizzante","presidio medico"],prods:["alcovir","igiesanrtu","soquat"]},
  {k:"pulivetro",kw:["pulivetro","lavavetri","detergente vetri","vetri e specchi"],prods:["detersolvs","duflash","plurel"]},
@@ -880,7 +880,7 @@ var CT_DB=[
  {n:"Diversey Clax",m:["clax"],x:"smacchiatore bucato tessuti"},
  {n:"Ecolab Greaselift",m:["greaselift","grease lift","greasecutter","greaseblast"],x:"sgrassante alcalino piano di lavoro food concentrato"},
  {n:"Ecolab Lime-A-Way",m:["lime-a-way","lime a way","limeaway"],x:"anticalcare acido concentrato"},
- {n:"Ecolab Incidin",m:["incidin"],x:"disinfettante piano di lavoro pmc"},
+ {n:"Ecolab Incidin",m:["incidin"],x:"disinfettante piano di lavoro pmc alcol"},
  {n:"Ecolab Brial",m:["brial"],x:"detergente neutro pavimento"},
  {n:"Ecolab Assure",m:["assure"],x:"pulivetro vetri"},
  {n:"Ecolab Topmatic",m:["topmatic"],x:"lavastoviglie food concentrato"},
@@ -892,7 +892,7 @@ var CT_DB=[
  {n:"Chanteclair Sgrassatore",m:["chanteclair","chanteclaire"],x:"sgrassante piano di lavoro pronto"},
  {n:"Lysoform",m:["lysoform","lisoform"],x:"disinfettante piano di lavoro pmc pronto"},
  {n:"Mastro Lindo",m:["mastro lindo","mastrolindo"],x:"detergente neutro multiuso piano di lavoro pronto"},
- {n:"Cif Crema",m:["cif"],x:"detergente neutro piano di lavoro"},
+ {n:"Cif Crema",m:["cif","cif professional","cif pro"],x:"detergente neutro multiuso crema"},
  {n:"Nuncas Anticalcare",m:["nuncas"],x:"anticalcare acido sanitari"},
  {n:"Amuchina Superfici",m:["amuchina"],x:"disinfettante piano di lavoro pmc pronto cloroattivo ipoclorito"},
  {n:"Mistral (Arco)",m:["arco mistral"],x:"sgrassante alcalino superfici food concentrato piano di lavoro"},
@@ -917,7 +917,7 @@ var CT_DB=[
  {n:"Sisma (Arco)",m:["arco sisma"],x:"disincrostante acido food macchine proteico"},
  {n:"Trisan (Arco)",m:["trisan"],x:"disinfettante detergente pronto superfici pmc"},
  {n:"Bioclor (Arco)",m:["bioclor"],x:"disinfettante cloroattivo ipoclorito superfici concentrato"},
- {n:"Gesan (Arco)",m:["gesan"],x:"disinfettante sanitizzante superfici concentrato pmc"},
+ {n:"Gesan (Arco)",m:["gesan"],x:"disinfettante sanitizzante superfici concentrato pmc quaternari"},
  {n:"Iposan (Arco)",m:["iposan"],x:"disinfettante cloro ipoclorito superfici"},
  {n:"Puliforno (Arco)",m:["puliforno"],x:"sgrassante forno cappe grill concentrato"},
  {n:"Arcomatic (Arco)",m:["arcomatic"],x:"detergente lavastoviglie food concentrato"},
@@ -932,7 +932,7 @@ var CT_DB=[
  {n:"Solmix (Arco)",m:["solmix"],x:"sgrassante solvente superfici piano di lavoro"},
  {n:"Bak (Arco)",m:["arco bak"],x:"sgrassante solvente smacchiatore inchiostri adesivi vernici piano di lavoro"},
  {n:"Volee (Arco)",m:["volee"],x:"brillantante lavastoviglie autoasciugante"},
- {n:"Sanikal-eco (Kiehl)",m:["sanikal","sanikal-eco","sanikal eco"],x:"anticalcare sanitari bagno acido"},
+ {n:"Sanikal-eco (Kiehl)",m:["sanikal","sanikal-eco","sanikal eco"],x:"detergente neutro manutentore sanitari bagno senza acidi ne cloro"},
  {n:"Powerfix-gel (Kiehl)",m:["powerfix","powerfix-gel","powerfix gel"],x:"anticalcare gel acido sanitari wc verticali"},
  {n:"Patronal-eco (Kiehl)",m:["patronal","patronal-eco"],x:"lavaincera protettivo manutentore pavimento"},
  {n:"GlasQueen (Kiehl)",m:["glasqueen","glas queen"],x:"pulivetro vetri"},
@@ -982,7 +982,7 @@ var CT_DB=[
  {n:"Ecobrite (Ecolab)",m:["ecobrite"],x:"detersivo bucato additivo"},
  {n:"Taxat (Ecolab)",m:["taxat"],x:"detersivo bucato"},
  {n:"Xense (Ecolab)",m:["xense"],x:"deodorante ambiente"},
- {n:"Ozonit (Ecolab)",m:["ozonit"],x:"disinfettante bucato pmc additivo"},
+ {n:"Ozonit (Ecolab)",m:["ozonit"],x:"disinfettante bucato pmc additivo perossido ossigeno"},
  {n:"Xtra Calc (Sutter)",m:["xtra calc","xtracalc"],x:"anticalcare acido bagno"},
  {n:"Multigienic (Sutter)",m:["multigienic"],x:"detergente igienizzante multiuso superfici"},
  {n:"Grill Cleaner (Sutter)",m:["grill cleaner"],x:"sgrassante forno alcalino"},
@@ -1002,6 +1002,7 @@ var CT_DB=[
  {n:"Ondasan (Sutter)",m:["ondasan"],x:"sanitizzante detergente pavimento superfici pmc"},
  {n:"Tanet (green care W&M)",m:["tanet"],x:"detergente neutro pavimento concentrato ecologico"},
  {n:"Sanet (green care W&M)",m:["sanet"],x:"anticalcare acido bagno concentrato ecologico"},
+ {n:"Sanet Alkastar (green care W&M)",m:["sanet alkastar","alkastar"],x:"sgrassante alcalino bagno sanitari senza acidi superfici sensibili agli acidi piano di lavoro"},
  {n:"Tawip (green care W&M)",m:["tawip"],x:"lavaincera pavimento ecologico"},
  {n:"Longlife (green care W&M)",m:["longlife"],x:"lavaincera pavimento film protettivo"},
  {n:"Linax (green care W&M)",m:["linax","quickstrip"],x:"decerante pavimento"},
@@ -1016,19 +1017,19 @@ var CT_DB=[
  {n:"Aroma (green care W&M)",m:["aroma intense","aroma fresh"],x:"deodorante ambiente"},
  {n:"Fun Ball (Kiter)",m:["fun ball","funball"],x:"sgrassante multiuso superfici pronto all uso piano di lavoro"},
  {n:"Brio (Kiter)",m:["kiter brio","brio sgrassante","brio s.c"],x:"sgrassante alcalino pavimento concentrato piano di lavoro"},
- {n:"Kersan (Kiter)",m:["kersan"],x:"sanitizzante detergente bagno sanitari"},
- {n:"Kitersan (Kiter)",m:["kitersan"],x:"disinfettante concentrato pmc"},
- {n:"Elcid (Kiter)",m:["elcid"],x:"disinfettante sanitari bagno pmc"},
+ {n:"Kersan (Kiter)",m:["kersan"],x:"disinfettante sanitizzante detergente pavimento fenolo alcol"},
+ {n:"Kitersan (Kiter)",m:["kitersan"],x:"disinfettante concentrato pmc quaternari"},
+ {n:"Elcid (Kiter)",m:["elcid"],x:"disinfettante sanitari bagno pmc quaternari"},
  {n:"Alcor (Kiter)",m:["alcor"],x:"igienizzante sgrassante superfici piano di lavoro"},
  {n:"Jet Anticalcare (Kiter)",m:["jet anticalcare"],x:"anticalcare bagno pronto all uso"},
  {n:"Day Due (Kiter)",m:["day due"],x:"anticalcare bagno quotidiano brillantante"},
  {n:"Nevercalc (Kiter)",m:["nevercalc"],x:"disincrostante acido bagno"},
  {n:"K750 (Kiter)",m:["k750","k 750"],x:"sgrassante alcalino superfici piano di lavoro"},
  {n:"Alfa (Kiter)",m:["kiter alfa"],x:"detergente neutro pavimento"},
- {n:"Comet (Kiter)",m:["kiter comet","omega plus","eufast"],x:"lavaincera pavimento film protettivo"},
+ {n:"Comet (Kiter)",m:["kiter comet","comet","omega plus","eufast"],x:"lavaincera pavimento film protettivo"},
  {n:"Eustrip (Kiter)",m:["eustrip"],x:"decerante pavimento"},
  {n:"Magic Gres (Kiter)",m:["magic gres","die gres"],x:"sgrassante pavimento gres pulizia di fondo piano di lavoro"},
- {n:"Scud (Kiter)",m:["kiter scud"],x:"acido disincrostante pavimento pulizia di fondo"},
+ {n:"Scud (Kiter)",m:["kiter scud","scud"],x:"acido disincrostante pavimento pulizia di fondo"},
  {n:"Luce Eco (Kemika)",m:["luce eco"],x:"decerante pavimento"},
  {n:"Detar (Kemika)",m:["detar"],x:"disincrostante acido multiuso wc"},
  {n:"Sanocit (Kemika)",m:["sanocit"],x:"anticalcare bagno"},
@@ -1036,7 +1037,7 @@ var CT_DB=[
  {n:"Ecoklin (Kemika)",m:["ecoklin"],x:"sgrassante multiuso superfici piano di lavoro"},
  {n:"Neoglass (Kemika)",m:["neoglass"],x:"detergente vetri"},
  {n:"Toc (Kemika)",m:["toc super","toc mela"],x:"brillantante lavastoviglie"},
- {n:"Sanny (Kemika)",m:["sanny"],x:"disinfettante detergente pmc"},
+ {n:"Sanny (Kemika)",m:["sanny"],x:"disinfettante detergente pmc quaternari"},
  {n:"Biospot (Kemika)",m:["biospot"],x:"cloroattivo sanitizzante sbiancante"},
  {n:"Mega/Ultras (Kemika)",m:["kemika mega","kemika ultras"],x:"lavaincera pavimento film protettivo metallizzata"},
  {n:"Desk (Liber)",m:["liber desk"],x:"sgrassante multiuso superfici piano di lavoro"},
@@ -1053,8 +1054,8 @@ var CT_DB=[
  {n:"Labbel (Liber)",m:["labbel"],x:"lavaincera manutentore autolucidante pavimento"},
  {n:"Demadur (Liber)",m:["demadur","demash","dematic","demok"],x:"detergente lavastoviglie concentrato"},
  {n:"Nodrop (Liber)",m:["nodrop"],x:"brillantante lavastoviglie"},
- {n:"Cliff (Liber)",m:["liber cliff"],x:"sanitizzante superfici igienizzante"},
- {n:"Netsan (Liber)",m:["netsan"],x:"sanitizzante bagno sanitari"},
+ {n:"Cliff (Liber)",m:["liber cliff","cliff"],x:"disinfettante sanitizzante superfici quaternari"},
+ {n:"Netsan (Liber)",m:["netsan"],x:"disinfettante sanitizzante superfici clorexidina biguanide"},
  {n:"Axa Clor (Liber)",m:["axa clor","practiclor"],x:"cloroattivo sanificante sanitizzante superfici"},
  {n:"Bengy (Liber)",m:["bengy","superlinen","potter"],x:"detersivo bucato"},
  {n:"Kentex (Liber)",m:["kentex"],x:"smacchiatore bucato pretrattante"},
@@ -1073,7 +1074,7 @@ var CT_DB=[
  {n:"Puligen (Interchem)",m:["puligen"],x:"sgrassante superfici multiuso piano di lavoro"},
  {n:"Efficace (Interchem)",m:["efficace wc","efficace mobili","efficace tabs","efficace clor"],x:"disincrostante cloroattivo wc bagno"},
  {n:"Texonit/Tergonit (Interchem)",m:["texonit","tergonit","neofort"],x:"detergente lavastoviglie brillantante"},
- {n:"Aires (Interchem)",m:["aires freschezza","aires floreale","aires ambra","aires vaniglia"],x:"deodorante ambiente profumatore"},
+ {n:"Aires (Interchem)",m:["aires","aires freschezza","aires floreale","aires ambra","aires vaniglia"],x:"deodorante ambiente profumatore"},
  {n:"Oxalis/Nuages (Interchem)",m:["oxalis","nuages"],x:"sapone mani cura persona igiene mani"},
  {n:"Luemi Wash (Luemi)",m:["wash bar","wash brill","wash super","wash soft","wash cl"],x:"detergente lavastoviglie brillantante concentrato"},
  {n:"Luemi Piatti (Luemi)",m:["piatti go","piatti super","piatti perlato","piatti plus","basic piatti"],x:"sgrassante piatti manuale cucina neutro piano di lavoro"},
@@ -1118,7 +1119,7 @@ var CT_DB=[
  {n:"Tecno Parquet / Holzer (Alca legno)",m:["tecno parquet","holzer legno","holzer parquet"],x:"detergente manutentore legno parquet"},
  {n:"Altawax / Cerlux / Turbowax (Alca cere)",m:["altawax","cerlux","turbowax","primacera","cerlav","finipel","finitex"],x:"lavaincera pavimento film protettivo"},
  {n:"Decerauto / Neutro Strip (Alca deceranti)",m:["decerauto","neutro strip","strip hs"],x:"decerante pavimento"},
- {n:"Calcanet / Alcacid / Stop Lime (Alca bagno)",m:["calcanet","calcis","alcacid","matic kalk","stop lime","monodose bagni","monodose disincrostante bagni","disincrostante wc ecolabel","marmolux","descaler"],x:"anticalcare acido bagno disincrostante"},
+ {n:"Calcanet / Alcacid / Stop Lime (Alca bagno)",m:["calcanet","calcis","alcacid","matic kalk","stop lime","monodose bagni","monodose disincrostante bagni","disincrostante wc ecolabel","descaler"],x:"anticalcare acido bagno disincrostante"},
  {n:"Tersovetri / King Glass (Alca vetri)",m:["tersovetri","king glass","vetri ecolabel","freester vetri","opaline"],x:"detergente vetri superfici lucide"},
  {n:"Jet Matic / Lavabar (Alca lavastoviglie)",m:["jet matic","lavabar","dishmatic","dishwash","extra dish","nach automat","lavastoviglie ecolabel"],x:"detergente lavastoviglie alcalino concentrato"},
  {n:"Brillantante Alca (Alca)",m:["brillantante ecolabel","net water"],x:"brillantante lavastoviglie"},
@@ -1145,7 +1146,9 @@ var CT_DB=[
  {n:"ARCANDIS (Kiehl lavastoviglie)",m:["arcandis"],x:"detergente lavastoviglie professionale alcalino"},
  {n:"DIWA / Vinox-matic (Kiehl lavaggio bicchieri)",m:["diwa","diwa-basic","vinox-matic","vinox matic"],x:"detergente lavastoviglie bicchieri disincrostante"},
  {n:"Coffexano (Kiehl macchine caffe)",m:["coffexano"],x:"disincrostante decalcificante macchine caffe"},
- {n:"Desinet / RapiDes / Desgomin (Kiehl disinfezione)",m:["desinet","rapides","rapidés","promop-des","desgomin","kiehl decs","decs ambiente"],x:"disinfettante superfici concentrato pmc"},
+ {n:"Kiehl-RapiDes (Kiehl disinfezione rapida)",m:["rapides","rapidés","kiehl-rapides"],x:"disinfettante superfici rapido pmc alcol"},
+ {n:"Desinet / Desgomin (Kiehl disinfezione)",m:["desinet","desgomin","promop-des"],x:"disinfettante superfici concentrato pmc amminico senza aldeidi"},
+ {n:"Kiehl Decs (Kiehl disinfezione)",m:["kiehl decs","decs ambiente"],x:"disinfettante superfici pmc cloroattivo elettrolitico ipoclorito"},
  {n:"ARENAS (Kiehl lavanderia)",m:["arenas"],x:"detersivo bucato lavanderia additivo"},
  {n:"Kiehl-Legnodur (Kiehl parquet)",m:["legnodur","kiehl-legnodur"],x:"lavaincera cera protettivo legno parquet"},
  {n:"Eloxa / Leather Care (Kiehl metalli/mobili)",m:["eloxa","leather","plasto care"],x:"manutentore metalli mobili plastica"},
@@ -1154,7 +1157,13 @@ var CT_DB=[
  {n:"Plumatic (Arco superconcentrati)",m:["plumatic"],x:"detergente concentrato dosaggio multiuso neutro superfici pavimento"},
  {n:"Infyniti (Arco monodose)",m:["infyniti"],x:"detergente monodose concentrato multiuso neutro superfici"},
  {n:"Aladin (Arco diluizione)",m:["aladin"],x:"detergente concentrato multiuso neutro superfici pavimento"},
- {n:"Taski Sprint Glass (Diversey)",m:["sprint glass"],x:"pulivetro vetri detergente vetri specchi"}
+ {n:"Taski Sprint Glass (Diversey)",m:["sprint glass"],x:"pulivetro vetri detergente vetri specchi"},
+ {n:"Enzymatic SC (Arco)",m:["enzymatic","enzimatico arco"],x:"detersivo bucato enzimatico pretrattante smacchiatore proteine grassi"},
+ {n:"Sanitec Power XP (pietra)",m:["power xp"],x:"sgrassante alcalino pietra naturale patina piano di lavoro"},
+ {n:"Sanitec Acid SP (pietra)",m:["acid sp"],x:"acido disincrostante pietra naturale fondo"},
+ {n:"Sanitec Petranova protettivi (impregnanti)",m:["hydro s","aqua plus","petranova aqua","graffiti rm","petra 24","metal bro"],x:"impregnante idrorepellente protettivo pietra antigraffiti antimacchia"},
+ {n:"Marmolux (Alca)",m:["marmolux"],x:"lavaincera cera protettivo marmo pavimento film autolucidante"},
+ {n:"Viarust (Kiter)",m:["viarust"],x:"acido disincrostante disossidante ruggine ossidi metallici forte"}
 ];
 var CT_BRANDS=["diversey","suma","taski","ecolab","sutter","christeyns","kiter","interchem","argonit","italchimica","sanitec","nuncas","werner mertz","arco chimica","arcochimica","kiehl","desgoquat","kemika","liber","likor","luemi","bettari","madal","alca chimica","ecochim","kemix","magris","topclin","lysoform","green care","tana professional","wmprof","cif professional","alca","verde eco","uni5","alca chemical"];
 function ctHit(q,a){var qa=q.replace(/[-_\/]/g," "),aa=a.replace(/[-_\/]/g," ");return aa.indexOf(" ")>=0?(qa.indexOf(aa)>=0):aWordIn(qa,aa);}
@@ -1168,7 +1177,9 @@ var CT_NOMATCH=[
  {kw:["shampoo auto","carrozzeria auto","autoshampoo","detergente per veicoli"],cat:"car care"},
  {kw:["disgorgante","disostruente","scarichi otturati","tubazioni intasate","sturalavandini","stura scarichi"],cat:"disostruenti scarichi"},
  {kw:["ammorbidente","addolcente tessuti","ammorbidenti","ammorbidire"],cat:"ammorbidenti tessili"},
- {kw:["zootecnia","cura del bovino","mungitura","veterinario","zootecnico","igiene mammella"],cat:"zootecnia/veterinario"}
+ {kw:["zootecnia","cura del bovino","mungitura","veterinario","zootecnico","igiene mammella"],cat:"zootecnia/veterinario"},
+ {kw:["sverniciatore","svernicianti","sverniciante","paint remover","rimozione vernice","cristallizzante","cristallizzatore","cristallizzazione","antighiaccio","scioglighiaccio","deicer","sigillante permanente","sealer permanente"],cat:"trattamenti tecnici fuori gamma (sverniciatura/cristallizzazione/antighiaccio/sigillanti)"},
+ {kw:["impregnante","idrorepellente","antimacchia","protettivo pietra","protettivo per pietra","antigraffiti","anti-graffiti","antisale","oleorepellente","idro-oleorepellente"],cat:"protettivi/impregnanti pietra e antigraffiti (fuori gamma)"}
 ];
 function aDisinfActive(q){
  if(aHas(q,["quaternari","quaternario","ammonio quaternario","sali quaternari","ddac","didecil","benzalconio","alchil dimetil","cloruro di alchil","sale quaternario","benzalconio cloruro"]))return "qac";
@@ -1178,13 +1189,14 @@ function aDisinfActive(q){
  if(aHas(q,["aldeide","aldeidi","glutaraldeide","formaldeide","gliossale","glutarale"]))return "aldeide";
  if(aHas(q,["iodio","iodoforo","iodopovidone","povidone iodio","pvp iodio","iodofori"]))return "iodio";
  if(aHas(q,["clorexidina","biguanide","biguanidi","phmb","poliesametilen"]))return "biguanide";
- if(aHas(q,["fenolo","fenolico","fenoli"]))return "fenolo";
+ if(aHas(q,["fenolo","fenolico","fenoli","diclosan","diclorofene","dichlorophen"]))return "fenolo";
+ if(aHas(q,["amminico","aminico","ammina","ammine","alchilammina","alchil ammina","alchilpropilendiammina","poliammina","amino propil","aminopropil","senza aldeidi"]))return "amine";
  if(aHas(q,["alcol","alcool","alcolico","alcolica","etanolo","isopropanolo","isopropilico","propanolo","etilico"]))return "alcol";
  return "";
 }
 function aDisinfCT(q,recog){
  var act=aDisinfActive(q);
- var LAB={qac:"sali quaternari d'ammonio",alcol:"alcol",cloro:"cloro attivo / ipoclorito",perossido:"perossido di idrogeno",peracetico:"acido peracetico",aldeide:"aldeidi",iodio:"iodio / iodofori",biguanide:"biguanidi (es. clorexidina)",fenolo:"composti fenolici"};
+ var LAB={qac:"sali quaternari d'ammonio",alcol:"alcol",cloro:"cloro attivo / ipoclorito",perossido:"perossido di idrogeno",peracetico:"acido peracetico",aldeide:"aldeidi",iodio:"iodio / iodofori",biguanide:"biguanidi (es. clorexidina)",fenolo:"composti fenolici",amine:"derivati amminici (ammine, senza aldeidi ne quaternari)"};
  if(!act){aPending=q;return "🧪 Per il controtipo di un <b>disinfettante</b> mi serve il <b>principio attivo</b> del prodotto concorrente: e a base di <b>sali quaternari d'ammonio</b>, <b>alcol</b>, <b>cloro/ipoclorito</b>, <b>perossido di idrogeno</b>, <b>acido peracetico</b>, <b>aldeidi</b>, <b>iodio</b> o <b>biguanidi</b>? (lo trovi sulla scheda tecnica / SDS del prodotto)";}
  var head=recog?("Riconosciuto: <b>"+recog+"</b> — disinfettante a base di <b>"+LAB[act]+"</b>."):("Disinfettante a base di <b>"+LAB[act]+"</b>.");
  if(act==="qac"){
