@@ -1124,7 +1124,7 @@ var CT_DB=[
  {n:"Brillantante Alca (Alca)",m:["brillantante ecolabel","net water"],x:"brillantante lavastoviglie"},
  {n:"Oxinet / Peroxy / Saniter (Alca disinfettanti PMC)",m:["oxinet","peroxy","peracid","saniter plus","sani90","lebensan","fata haccp","gel chlor"],x:"disinfettante superfici pmc perossido"},
  {n:"Lavabucato / Lavolana (Alca lavanderia)",m:["lavabucato","lavalimone","lavolana","lana e delicati","molly","candoral"],x:"detersivo bucato lavanderia"},
- {n:"Alca Ammorbidente (Alca)",m:["alca ammorbidente","ammon"],x:"ammorbidente tessuti lavanderia"},
+ {n:"Alca Ammorbidente (Alca)",m:["alca ammorbidente"],x:"ammorbidente tessuti lavanderia"},
  {n:"Essenza / Jazz / Jolie (Alca deodoranti)",m:["essenza jazz","essenza glen","essenza jolie","essenza mandarino","jazz aretha","jazz ella","jazz miles","jazz norah","jolie","melody"],x:"deodorante ambiente profumatore"},
  {n:"Duniv / Unica / Leader (Alca multiuso)",m:["duniv","unica","blue chem","p matik","leader hs"],x:"detergente multiuso superfici neutro"},
  {n:"Alca cura persona / auto (fuori gamma)",m:["dermoman","derman","deterdermo","mani gel fast","bol shampoo","bol shampo","igiendermo","dermochlor","lavamotor","luxcar"],x:"sapone mani cura persona shampoo doccia car care auto"},
@@ -1172,9 +1172,9 @@ var CT_NOMATCH=[
 ];
 function aDisinfActive(q){
  if(aHas(q,["quaternari","quaternario","ammonio quaternario","sali quaternari","ddac","didecil","benzalconio","alchil dimetil","cloruro di alchil","sale quaternario","benzalconio cloruro"]))return "qac";
- if(aHas(q,["perossido","acqua ossigenata","ossigeno attivo","ossigeno-attivo","perossido di idrogeno","h2o2","percarbonato"]))return "perossido";
+ if(aHas(q,["perossido","acqua ossigenata","ossigeno attivo","ossigeno-attivo","perossido di idrogeno","h2o2","percarbonato","oxygen","ossigeno-att"]))return "perossido";
  if(aHas(q,["peracetico","acido peracetico"]))return "peracetico";
- if(aHas(q,["ipoclorito","cloro attivo","cloro-attivo","cloroattivo","ipoclor","dicloroisocianurato","dicloro","nadcc","candeggina"]))return "cloro";
+ if(aHas(q,["ipoclorito","cloro attivo","cloro-attivo","cloroattivo","ipoclor","dicloroisocianurato","dicloro","nadcc","candeggina","al cloro","a base di cloro","cloro "," cloro","cloro-"]))return "cloro";
  if(aHas(q,["aldeide","aldeidi","glutaraldeide","formaldeide","gliossale","glutarale"]))return "aldeide";
  if(aHas(q,["iodio","iodoforo","iodopovidone","povidone iodio","pvp iodio","iodofori"]))return "iodio";
  if(aHas(q,["clorexidina","biguanide","biguanidi","phmb","poliesametilen"]))return "biguanide";
@@ -1265,6 +1265,11 @@ function assistAnswer(qraw){var q=aNorm(qraw);
   if(aCtx.surf.length&&!surf.length&&(_fs.length||_fop)){q=q+" "+aCtx.surf.join(" ");surf=aCtx.surf.slice();}
  }
  /* CONTROTIPO (prodotto concorrente -> equivalente Sochil) */
+ var _disI=aHas(q,["disinfett","sanific","sanitizz","battericid","virucid","fungicid","presidio medico","biocida","p.m.c"]);
+ if(_disI){var _dact=aDisinfActive(q);var _dct=aHas(q,["controtipo","contro tipo","equivalente","corrispondente","al posto di","in sostituzione","sostituto","alternativa al prodotto","concorrente","competitor","cross reference"])||!!aCtDb(q)||!!aCtBrand(q);
+  if(_dact){var _dr=aCtDb(q);return aDisinfCT(q,_dr?_dr.n:"");}
+  else if(_dct){return aDisinfCT(q,"");}
+ }
  if(aHas(q,["controtipo","contro tipo","equivalente","corrispondente","al posto di","in sostituzione","sostituto","come il prodotto","alternativa al prodotto","concorrente","competitor","cross reference"])||aCtDb(q)||aCtBrand(q)){var _ctr=aControtipo(q);if(_ctr==="ASK"){aPending=q;return "Per identificare il controtipo dimmi la <b>funzione</b> del prodotto concorrente (sgrassante, anticalcare, disinfettante, neutro, decerante, lavaincera, pulivetro, smacchiatore) e, se lo sai, il <b>settore</b> (cucina, bagno, pavimenti, industriale, food).";}if(_ctr)return _ctr;}
  /* GLOSSARIO TECNICO (professional cleaning) */
  var _def=aHas(q,["cos'è","cos e","cosa è","cosa e","che cos","cosa significa","cosa vuol dire","che vuol dire","significato","definizione","defini","spiegami","spiega","in cosa consiste","come si fa","a cosa serve","come funziona"]);
